@@ -62,11 +62,11 @@ class CreatePoll extends React.Component {
         <section>
           <h2>Poll Preview</h2>
           <ul>
-            <li>Restaurant 1, 123 Main St, Italian <button type="button">Delete</button></li>
-            <li>Restaurant 2, 456 Main St, Sushi <button type="button">Delete</button></li>
-            <li>Restaurant 3, 789 Main St, Sandwiches <button type="button">Delete</button></li>
-            <li>Restaurant 4, 321 Main St, Pizza <button type="button">Delete</button></li>
-            <li>Restaurant 5, 654 Main St, Burgers <button type="button">Delete</button></li>
+            <li>Restaurant 1, 123 Main St, Italian (<a href="#LinkToRestaurant1">Link</a>) <button type="button">Delete</button></li>
+            <li>Restaurant 2, 456 Main St, Sushi (<a href="#LinkToRestaurant2">Link</a>) <button type="button">Delete</button></li>
+            <li>Restaurant 3, 789 Main St, Sandwiches (<a href="#LinkToRestaurant3">Link</a>) <button type="button">Delete</button></li>
+            <li>Restaurant 4, 321 Main St, Pizza (<a href="#LinkToRestaurant4">Link</a>) <button type="button">Delete</button></li>
+            <li>Restaurant 5, 654 Main St, Burgers (<a href="#LinkToRestaurant5">Link</a>) <button type="button">Delete</button></li>
           </ul>
         </section>
         
