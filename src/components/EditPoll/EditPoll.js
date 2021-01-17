@@ -1,7 +1,7 @@
 import React from 'react';
 import PollForm from '../PollForm/PollForm';
 
-class CreatePoll extends React.Component {
+class EditPoll extends React.Component {
   render() {
     return (
       <>
@@ -10,7 +10,7 @@ class CreatePoll extends React.Component {
         </header>
 
         <section>
-          <h2>Create Poll</h2>
+          <h2>Edit Poll</h2>
         </section>
 
         <PollForm history={this.props.history} />
@@ -19,4 +19,4 @@ class CreatePoll extends React.Component {
   }
 }
 
-export default CreatePoll;
+export default EditPoll;

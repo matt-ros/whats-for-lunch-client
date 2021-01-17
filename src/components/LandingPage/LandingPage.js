@@ -26,7 +26,15 @@ class LandingPage extends React.Component {
         </section>
         
         <section>
-          <Link to='/create'>Create a Poll!</Link>
+          <Link to="/create">Create a Poll!</Link>
+        </section>
+
+        <section>
+          Or, <Link to="/signup">Sign Up</Link> to be able to save and reuse polls!
+        </section>
+
+        <section>
+          Already have an account?  <Link to="/login">Log In!</Link>
         </section>
       </main>
     );
