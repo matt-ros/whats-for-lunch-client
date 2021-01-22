@@ -16,11 +16,11 @@ const HereApiService = {
       );
   },
 
-  restaurantSearch(lat, long, radius = 1609) {
+  restaurantSearch(lat, long, radius) {
     const params = {
       apiKey: config.API_KEY,
       at: `${lat},${long}`,
-      in: `circle:${lat},${long};r=${radius}`,
+      in: `circle:${lat},${long};r=${Math.floor(radius * 1609)}`,
       limit: 100,
       categories: '100-1000',
     };

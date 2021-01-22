@@ -46,3 +46,8 @@ ul {
   list-style-position: outside;
   padding-left: 0;
 }
+
+fieldset {
+  width: max-content;
+  margin: auto;
+}
