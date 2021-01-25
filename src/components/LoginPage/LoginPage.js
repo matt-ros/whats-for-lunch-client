@@ -52,6 +52,9 @@ class LoginPage extends React.Component {
             <input type="password" name="password" id="password" /> <br />
             <button type="submit">Log In</button>
           </form>
+          <p>Demo account credentials:</p>
+          <p>Username: demo</p>
+          <p>Password: Password1!</p>
         </section>
       </>
     );

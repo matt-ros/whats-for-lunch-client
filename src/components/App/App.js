@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import TokenService from '../../services/token-service';
 import PrivateRoute from '../Utils/PrivateRoute';
 import PublicOnlyRoute from '../Utils/PublicOnlyRoute';
@@ -11,6 +11,7 @@ import PollPage from '../PollPage/PollPage';
 import PollResultsPage from '../PollResultsPage/PollResultsPage';
 import SignupPage from '../SignupPage/SignupPage';
 import UserHomepage from '../UserHomepage/UserHomepage';
+import Nav from '../Nav/Nav';
 
 class App extends React.Component {
   state = {
@@ -22,7 +23,6 @@ class App extends React.Component {
   }
 
   onLogout = () => {
-    TokenService.clearAuthToken();
     this.setState({ loggedIn: false });
   }
 
@@ -30,29 +30,17 @@ class App extends React.Component {
     this.setState({ loggedIn: true });
   }
 
-  renderLoggedIn() {
-    return (
-      <nav>
-        <Link to="/homepage">Home</Link> | <button type="button" onClick={this.onLogout}>Log Out</button>
-      </nav>
-    );
-  }
-
-  renderLoggedOut() {
-    return (
-      <nav>
-        <Link to="/">Home</Link>
-      </nav>
-    );
-  }
-
   render() {
     return (
       <main className="App">
-        {(this.state.loggedIn)
-          ? this.renderLoggedIn()
-          : this.renderLoggedOut()
-        }
+        <Route
+          render={(routeProps) => 
+            <Nav
+              history={routeProps.history}
+              onLogout={this.onLogout}
+            />
+          }
+        />
         <Switch>
           <Route
             exact path="/"

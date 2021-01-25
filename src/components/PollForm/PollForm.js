@@ -5,6 +5,7 @@ import ItemsApiService from '../../services/items-api-service';
 import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_red.css';
+import TokenService from '../../services/token-service';
 
 class PollForm extends React.Component {
   state = {
@@ -96,6 +97,25 @@ class PollForm extends React.Component {
     this.setState({ error: err.message});
   }
 
+  renderPollNameField() {
+    return (
+      <section>
+        <label htmlFor="pollName">Poll Name: </label>
+        <input
+          type="text"
+          name="pollName"
+          id="pollName"
+          onChange={this.handleChangePollName}
+          defaultValue={(this.props.poll) ? this.props.poll.poll_name : ''}
+        />
+      </section>
+    )
+  }
+
+  handleChangePollName = e => {
+    this.setState({ pollName: e.target.value });
+  }
+
   handleSubmitItem = e => {
     e.preventDefault();
     const { item_name, item_address, item_cuisine, item_link } = e.target;
@@ -132,6 +152,9 @@ class PollForm extends React.Component {
   }
 
   handleClickPublish = async () => {
+    if (this.state.items.length === 0) {
+      return this.setState({ error: 'Please add some items to your poll' });
+    }
     const newPoll = {
       poll_name: (this.state.pollName) ? this.state.pollName : '',
       end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
@@ -147,6 +170,9 @@ class PollForm extends React.Component {
   }
 
   handleClickUpdate = async () => {
+    if (this.state.items.length === 0) {
+      return this.setState({ error: 'Please add some items to your poll' });
+    }
     const updateFields = {
       poll_name: (this.state.pollName) ? this.state.pollName : '',
       end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
@@ -169,12 +195,13 @@ class PollForm extends React.Component {
     const { error } = this.state;
 
     const pollItems = this.state.items.map((item, idx) => {
+      const linkText = (item.item_link.toLowerCase().includes('google.com/maps')) ? 'Google Maps' : 'Link';
       return (
         <li key={idx}>
           {item.item_name}, {' '}
           {item.item_address}, {' '}
           {item.item_cuisine} {' '}
-          (<a href={item.item_link} target="_blank" rel="noreferrer">Google Maps</a>) {' '}
+          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) {' '}
           <button type="button" onClick={e => this.handleClickDelete(idx)}>Delete</button>
         </li>
       );
@@ -183,11 +210,16 @@ class PollForm extends React.Component {
     return (
       <>
         {error && <p className="error">{error}</p>}
+        {TokenService.hasUnexpiredAuthToken()
+          ? this.renderPollNameField()
+          : null
+        }
+
         <section>
           <form onSubmit={this.handleSubmitLocation}>
             <label htmlFor="location">Enter Location for Restaurant Search: </label>
-            <input type="text" name="location" id="location" />
-            <button type="submit">Search</button>
+            <input type="text" name="location" id="location" /> {' '}
+            <button type="submit">Search</button> {' '}
             <button type="button" onClick={this.handleCurrentLocation}>Use Current Location</button>
           </form>
         </section>
@@ -206,13 +238,13 @@ class PollForm extends React.Component {
             <fieldset>
               <legend>Add Item to Poll</legend>
               <label htmlFor="item_name">Name: </label>
-              <input type="text" name="item_name" id="item_name" /> <br />
+              <input type="text" name="item_name" id="item_name" placeholder="Mos Eisley Cantina" required /> <br />
               <label htmlFor="item_address">Address: </label>
-              <input type="text" name="item_address" id="item_address" /> <br />
+              <input type="text" name="item_address" id="item_address" placeholder="100 Mos Eisley Ave, Mos Eisley, Tatooine" /> <br />
               <label htmlFor="item_cuisine">Cuisine: </label>
-              <input type="text" name="item_cuisine" id="item_cuisine" /> <br />
+              <input type="text" name="item_cuisine" id="item_cuisine" placeholder="Bar Food" /> <br />
               <label htmlFor="item_link">Link: </label>
-              <input type="text" name="item_link" id="item_link" /> <br />
+              <input type="url" name="item_link" id="item_link" placeholder="http://www.moseisleycantina.com" /> <br />
             </fieldset>
             <button type="submit">Add</button>
           </form>
@@ -221,10 +253,10 @@ class PollForm extends React.Component {
         <section>
           <label htmlFor="poll-end-time">Poll End Time: </label>
           <Flatpickr
-            defaultValue={new Date(Date.now() + 60 * 60 * 1000).toTimeString()}
+            defaultValue={new Date(Date.now() + 60 * 60 * 1000).toISOString()}
             options={{
               enableTime: true,
-              noCalendar: true,
+              /* noCalendar: true, */
               dateFormat: 'H:i',
               minDate: new Date(),
               onChange: endTime => this.setState({ endTime: endTime[0] }),
@@ -243,7 +275,8 @@ class PollForm extends React.Component {
           {(this.props.poll)
             ? <button type="button" onClick={this.handleClickUpdate}>Update Poll</button>
             : <button type="button" onClick={this.handleClickPublish}>Publish Poll</button>
-          }
+          } {' '}
+          <button type="button" onClick={e => this.props.history.goBack()}>Cancel</button>
         </section>
       </>
     );

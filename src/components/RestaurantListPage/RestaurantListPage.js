@@ -104,9 +104,9 @@ class RestaurantListPage extends React.Component {
         <section>
           <form onSubmit={this.handleSubmit}>
             {choices}
-            <button type="button" onClick={this.handleSelectAll}>Select All</button>
-            <button type="button" onClick={this.handleDeselectAll}>Deselect All</button>
-            <button type="button" onClick={this.handleGetMore}>Get more restaurants</button>
+            <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
+            <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}
+            <button type="button" onClick={this.handleGetMore}>Get more restaurants</button> {' '}
             <button type="submit">Add restaurants to poll</button>
           </form>
         </section>

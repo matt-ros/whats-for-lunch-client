@@ -23,13 +23,14 @@ class PollPage extends React.Component {
     e.preventDefault();
     const { choice } = e.target;
     await ItemsApiService.incrementVote(choice.value);
-    TokenService.saveVotedToken(this.props.match.params.id);
+    TokenService.saveVotedToken(this.props.match.params.id, this.state.poll.end_time);
     choice.value = null;
     this.props.history.push(`/results/${this.props.match.params.id}`);
   }
 
   render() {
     const choices = this.state.items.map((item, idx) => {
+      const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
         <div key={idx}>
           <input type="radio" name="choice" id={`choice_${idx}`} value={item.id} required />
@@ -37,7 +38,7 @@ class PollPage extends React.Component {
             {item.item_name}, {' '}
             {item.item_address}, {' '}
             {item.item_cuisine} {' '}
-            (<a href={item.item_link} target="_blank" rel="noreferrer">Google Maps</a>)
+            (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>)
           </label>
           <br />
         </div>
@@ -46,8 +47,10 @@ class PollPage extends React.Component {
     return (
       <>
         {
-          (TokenService.hasVotedInPoll(this.props.match.params.id) || (this.state.poll && new Date(this.state.poll.end_time).getTime() < Date.now())) &&
-          <Redirect to={`/results/${this.props.match.params.id}`} />
+          (
+            TokenService.hasVotedInPoll(this.props.match.params.id, this.state.poll.end_time) ||
+            (/* this.state.poll &&  */new Date(this.state.poll.end_time).getTime() < Date.now())
+          ) && <Redirect to={`/results/${this.props.match.params.id}`} />
         }
         <header role="banner">
           <h1>What's For Lunch?</h1>
@@ -57,7 +60,7 @@ class PollPage extends React.Component {
           <h2>Where do you want to eat?</h2>
           <form onSubmit={this.handleSubmit}>
             {choices}
-            <button type="submit">Vote!</button>
+            <button type="submit">Vote!</button> {' '}
             <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
           </form>
         </section>

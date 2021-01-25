@@ -31,12 +31,13 @@ const TokenService = {
     return false;
   },
 
-  saveVotedToken(pollId) {
-    window.localStorage.setItem(`voted-${pollId}`, true);
+  saveVotedToken(pollId, timeString) {
+    window.localStorage.setItem(`voted-${pollId}`, timeString);
   },
 
-  hasVotedInPoll(pollId) {
-    if (window.localStorage.getItem(`voted-${pollId}`) === 'true') {
+  hasVotedInPoll(pollId, timeString) {
+    const votedToken = window.localStorage.getItem(`voted-${pollId}`);
+    if (votedToken === timeString) {
       return true;
     }
     else {
