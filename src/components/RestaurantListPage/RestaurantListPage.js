@@ -5,7 +5,7 @@ class RestaurantListPage extends React.Component {
     numChoices: 5,
     filter: '',
     radius: null,
-    restaurants: []
+    choices: []
   }
 
   handleGetMore = () => {
@@ -21,12 +21,50 @@ class RestaurantListPage extends React.Component {
   }
 
   handleClickChange = () => {
-    this.props.restaurantSearch(this.state.radius);
+    this.props.updateRadius(this.state.radius);
+  }
+
+  handleCheckbox = e => {
+    const choiceIndex = Number(e.target.value);
+    const newChoices = this.state.choices.filter(choice => choice !== choiceIndex);
+    if (newChoices.length === this.state.choices.length) {
+      this.setState({
+        choices: [
+          ...this.state.choices,
+          choiceIndex
+        ]
+      });
+    }
+    else {
+      this.setState({ choices: newChoices });
+    }
+  }
+
+  handleDeselectAll = () => {
+    const checkedItems = this.state.choices;
+    checkedItems.forEach(index => {
+      const element = document.getElementById(`choice_${index}`);
+      element.checked = false;
+    });
+    this.setState({ choices: [] });
+  }
+
+  handleSelectAll = () => {
+    const newChoices = [];
+    for (let i = 0; i < this.state.numChoices; i++) {
+      const element = document.getElementById(`choice_${i}`);
+      if (element) {
+        element.checked = true;
+        newChoices.push(i);
+      }
+    }
+    this.setState({ choices: newChoices });
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.history.goBack();
+    this.props.createPollItems(this.state.choices);
+    this.handleDeselectAll();
   }
 
   render() {
@@ -45,7 +83,7 @@ class RestaurantListPage extends React.Component {
     const choices = restChoices.map((choice, idx) => {
       return (
         <div key={idx}>
-          <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={idx} />
+          <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={idx} onChange={this.handleCheckbox} />
           <label htmlFor={`choice_${idx}`}>{choice.item_name}, {choice.item_address}, {choice.item_cuisine} (<a href={choice.item_link} target="_blank" rel="noreferrer">Google Maps</a>)</label>
           <br />
         </div>
@@ -66,6 +104,8 @@ class RestaurantListPage extends React.Component {
         <section>
           <form onSubmit={this.handleSubmit}>
             {choices}
+            <button type="button" onClick={this.handleSelectAll}>Select All</button>
+            <button type="button" onClick={this.handleDeselectAll}>Deselect All</button>
             <button type="button" onClick={this.handleGetMore}>Get more restaurants</button>
             <button type="submit">Add restaurants to poll</button>
           </form>

@@ -68,6 +68,20 @@ const ItemsApiService = {
           ? res.json().then(e => Promise.reject(e))
           : res.ok
       );
+  },
+
+  resetVotes(pollId) {
+    return fetch(`${config.API_BASE_URL}/items/resetVotes/${pollId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${TokenService.getAuthToken()}`
+      },
+    })
+      .then(res =>
+        (!res.ok)
+          ? res.json().then(e => Promise.reject(e))
+          : res.ok
+      );
   }
 }
 

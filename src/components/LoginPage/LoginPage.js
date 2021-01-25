@@ -1,14 +1,39 @@
 import React from 'react';
+import AuthApiService from '../../services/auth-api-service';
+import TokenService from '../../services/token-service';
 
 class LoginPage extends React.Component {
-  handleSubmit = e => {
+  state = {
+    error: null,
+  }
+
+  handleSubmit = async e => {
+    e.preventDefault();
+    this.setState({ error: null });
     const { user_name, password } = e.target;
-    user_name.value = '';
-    password.value = '';
-    this.props.history.push('/homepage');
+    const loginUser = {
+      user_name: user_name.value,
+      password: password.value
+    };
+    try {
+      const res = await AuthApiService.postLogin(loginUser);
+      user_name.value = '';
+      password.value = '';
+      TokenService.saveAuthToken(res.authToken);
+      this.props.history.push({
+        pathname: '/',
+        state: {
+          loggedIn: true
+        }
+      });
+    } catch (error) {
+      this.setState({ error: error.message });
+    }
   }
 
   render() {
+    const { error } = this.state;
+
     return (
       <>
         <header role="banner">
@@ -17,6 +42,9 @@ class LoginPage extends React.Component {
 
         <section>
           <h2>Log In</h2>
+          {(error)
+            ? <div className="error">{error}</div>
+            : null }
           <form onSubmit={this.handleSubmit}>
             <label htmlFor="user_name">Username: </label>
             <input type="text" name="user_name" id="user_name" /> <br />

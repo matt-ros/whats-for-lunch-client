@@ -1,13 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 class LandingPage extends React.Component {
+  componentDidMount() {
+    if (this.props.location.state && this.props.location.state.loggedIn) {
+      this.props.onLogin();
+    }
+  }
+  
   render() {
     return (
       <main role="main">
         <header role="banner">
           <h1>What's For Lunch?</h1>
         </header>
+
+        {(this.props.location.state && this.props.location.state.loggedIn)
+          ? <Redirect to="/homepage" />
+          : null}
 
         <section>
           Never have trouble deciding where to eat again!

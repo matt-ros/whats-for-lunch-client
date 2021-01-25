@@ -1,25 +1,54 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PollsApiService from '../../services/polls-api-service';
+import UsersApiService from '../../services/users-api-service';
 
 class UserHomepage extends React.Component {
+  state = {
+    user: {},
+    polls: [],
+    error: null
+  }
+
+  async componentDidMount() {
+    try {
+      const user = await UsersApiService.getUser();
+      const polls = await PollsApiService.getPolls();
+      this.setState({
+        user,
+        polls,
+      });
+    }
+    catch (error) {
+      this.setState({ error: error.message });
+    }
+  }
+
   render() {
+    const { error } = this.state;
+    const savedPolls = this.state.polls.map((poll, idx) => {
+      const pollName = (poll.poll_name) ? poll.poll_name : `Unnamed Poll ${poll.id}`;
+      return (
+        <li key={idx}>
+          <Link to={{ pathname: `/edit/${poll.id}`, state: { poll } }}>{pollName}</Link>
+        </li>
+      );
+    })
     return (
       <>
         <header role="banner">
           <h1>What's For Lunch?</h1>
         </header>
-
+        {error && <p className="error">{error}</p>}
         <section>
-          <h2>Welcome, [Username]!</h2>
+          <h2>Welcome, {this.state.user.user_name}!</h2>
         </section>
 
         <section>
           <h3>Saved Polls</h3>
-          <Link to="/edit/1">Poll 1</Link> <br />
-          <Link to="/edit/2">Poll 2</Link> <br />
-          <Link to="/edit/3">Poll 3</Link> <br />
-          <Link to="/edit/4">Poll 4</Link> <br />
-          <Link to="/edit/5">Poll 5</Link>
+          <ul>
+            {savedPolls}
+          </ul>
         </section>
 
         <section>

@@ -1,33 +1,79 @@
 import React from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom';
+import TokenService from '../../services/token-service';
+import PrivateRoute from '../Utils/PrivateRoute';
+import PublicOnlyRoute from '../Utils/PublicOnlyRoute';
 import CreatePoll from '../CreatePoll/CreatePoll';
 import EditPoll from '../EditPoll/EditPoll';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import PollPage from '../PollPage/PollPage';
 import PollResultsPage from '../PollResultsPage/PollResultsPage';
-import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
 import SignupPage from '../SignupPage/SignupPage';
 import UserHomepage from '../UserHomepage/UserHomepage';
 
-function App() {
-  return (
-    <main className="App">
+class App extends React.Component {
+  state = {
+    loggedIn: false,
+  }
+
+  componentDidMount() {
+    this.setState({ loggedIn: TokenService.hasUnexpiredAuthToken() });
+  }
+
+  onLogout = () => {
+    TokenService.clearAuthToken();
+    this.setState({ loggedIn: false });
+  }
+
+  onLogin = () => {
+    this.setState({ loggedIn: true });
+  }
+
+  renderLoggedIn() {
+    return (
+      <nav>
+        <Link to="/homepage">Home</Link> | <button type="button" onClick={this.onLogout}>Log Out</button>
+      </nav>
+    );
+  }
+
+  renderLoggedOut() {
+    return (
       <nav>
         <Link to="/">Home</Link>
       </nav>
+    );
+  }
 
-      <Route exact path="/" component={LandingPage} />
-      <Route path="/create" component={CreatePoll} />
-      <Route path="/poll/:id" component={PollPage} />
-      <Route path="/results/:id" component={PollResultsPage} />
-      <Route path="/restaurants" component={RestaurantListPage} />
-      <Route path="/login" component={LoginPage} />
-      <Route path="/signup" component={SignupPage} />
-      <Route path="/homepage" component={UserHomepage} />
-      <Route path="/edit/:id" component={EditPoll} />
-    </main>
-  );
+  render() {
+    return (
+      <main className="App">
+        {(this.state.loggedIn)
+          ? this.renderLoggedIn()
+          : this.renderLoggedOut()
+        }
+        <Switch>
+          <Route
+            exact path="/"
+            render={(routeProps) => 
+              <LandingPage
+                location={routeProps.location}
+                onLogin={this.onLogin}
+              /> 
+            }
+          />
+          <Route path="/create" component={CreatePoll} />
+          <Route path="/poll/:id" component={PollPage} />
+          <Route path="/results/:id" component={PollResultsPage} />
+          <PublicOnlyRoute path="/login" component={LoginPage} />
+          <PublicOnlyRoute path="/signup" component={SignupPage} />
+          <PrivateRoute path="/homepage" component={UserHomepage} />
+          <PrivateRoute path="/edit/:id" component={EditPoll} />
+        </Switch>
+      </main>
+    );
+  }
 }
 
 export default App;

@@ -1,7 +1,37 @@
 import React from 'react';
+import ItemsApiService from '../../services/items-api-service';
+import PollsApiService from '../../services/polls-api-service';
+import TokenService from '../../services/token-service';
 
 class PollResultsPage extends React.Component {
+  state = {
+    poll: {},
+    items: []
+  }
+
+  async componentDidMount() {
+    const poll = await PollsApiService.getPoll(this.props.match.params.id);
+    const items = await ItemsApiService.getItems(this.props.match.params.id);
+    this.setState({
+      poll,
+      items,
+    });
+  }
+  
   render() {
+    const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
+    const pollItems = sortedItems.map((item, idx) => {
+      return (
+        <li key={idx}>
+          {item.item_name}, {' '}
+          {item.item_address}, {' '}
+          {item.item_cuisine} {' '}
+          (<a href={item.item_link} target="_blank" rel="noreferrer">Google Maps</a>): {' '}
+          {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
+        </li>
+      );
+    });
+
     return (
       <>
         <header role="banner">
@@ -11,13 +41,20 @@ class PollResultsPage extends React.Component {
         <section>
           <h2>Poll Results</h2>
           <ul>
-            <li>Restaurant 1, 123 Main St, Italian (<a href="#LinkToRestaurant1">Link</a>): 5 Votes</li>
-            <li>Restaurant 2, 456 Main St, Sushi (<a href="#LinkToRestaurant2">Link</a>): 2 Votes</li>
-            <li>Restaurant 3, 789 Main St, Sandwiches (<a href="#LinkToRestaurant3">Link</a>): 2 Votes</li>
-            <li>Restaurant 4, 321 Main St, Pizza (<a href="#LinkToRestaurant4">Link</a>): 0 Votes</li>
-            <li>Restaurant 5, 654 Main St, Burgers (<a href="#LinkToRestaurant5">Link</a>): 1 Vote</li>
+            {pollItems}
           </ul>
-          <button type="button" onClick={e => this.props.history.push(`/poll/${this.props.match.params.id}`)}>Vote in this Poll</button>
+          <button
+            type="button"
+            onClick={e => this.props.history.push(`/poll/${this.props.match.params.id}`)}
+            disabled={TokenService.hasVotedInPoll(this.props.match.params.id) || !(new Date(this.state.poll.end_time).getTime() > Date.now())}
+          >
+            {
+              TokenService.hasVotedInPoll(this.props.match.params.id)
+                ? 'You have already voted in this poll'
+                : (new Date(this.state.poll.end_time).getTime() > Date.now())
+                  ? 'Vote in this Poll'
+                  : 'This Poll has Ended'}
+          </button>
         </section>
       </>
     );

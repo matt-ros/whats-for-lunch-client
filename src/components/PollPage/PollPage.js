@@ -1,15 +1,54 @@
 import React from 'react';
+import ItemsApiService from '../../services/items-api-service';
+import { Redirect } from 'react-router-dom';
+import PollsApiService from '../../services/polls-api-service';
+import TokenService from '../../services/token-service';
 
 class PollPage extends React.Component {
-  handleSubmit = e => {
+  state = {
+    poll: {},
+    items: []
+  }
+
+  async componentDidMount() {
+    const poll = await PollsApiService.getPoll(this.props.match.params.id);
+    const items = await ItemsApiService.getItems(this.props.match.params.id);
+    this.setState({
+      poll,
+      items,
+    });
+  }
+
+  handleSubmit = async e => {
     e.preventDefault();
-    e.target.choice.value = null;
+    const { choice } = e.target;
+    await ItemsApiService.incrementVote(choice.value);
+    TokenService.saveVotedToken(this.props.match.params.id);
+    choice.value = null;
     this.props.history.push(`/results/${this.props.match.params.id}`);
   }
 
   render() {
+    const choices = this.state.items.map((item, idx) => {
+      return (
+        <div key={idx}>
+          <input type="radio" name="choice" id={`choice_${idx}`} value={item.id} required />
+          <label htmlFor={`choice_${idx}`}>
+            {item.item_name}, {' '}
+            {item.item_address}, {' '}
+            {item.item_cuisine} {' '}
+            (<a href={item.item_link} target="_blank" rel="noreferrer">Google Maps</a>)
+          </label>
+          <br />
+        </div>
+      )
+    })
     return (
       <>
+        {
+          (TokenService.hasVotedInPoll(this.props.match.params.id) || (this.state.poll && new Date(this.state.poll.end_time).getTime() < Date.now())) &&
+          <Redirect to={`/results/${this.props.match.params.id}`} />
+        }
         <header role="banner">
           <h1>What's For Lunch?</h1>
         </header>
@@ -17,16 +56,7 @@ class PollPage extends React.Component {
         <section>
           <h2>Where do you want to eat?</h2>
           <form onSubmit={this.handleSubmit}>
-            <input type="radio" name="choice" id="choice-1" required />
-            <label htmlFor="choice-1">Restaurant 1, 123 Main St, Italian (<a href="#LinkToRestaurant1">Link</a>)</label> <br />
-            <input type="radio" name="choice" id="choice-2" required />
-            <label htmlFor="choice-2">Restaurant 2, 456 Main St, Sushi (<a href="#LinkToRestaurant2">Link</a>)</label> <br />
-            <input type="radio" name="choice" id="choice-3" required />
-            <label htmlFor="choice-3">Restaurant 3, 789 Main St, Sandwiches (<a href="#LinkToRestaurant3">Link</a>)</label> <br />
-            <input type="radio" name="choice" id="choice-4" required />
-            <label htmlFor="choice-4">Restaurant 4, 321 Main St, Pizza (<a href="#LinkToRestaurant4">Link</a>)</label> <br />
-            <input type="radio" name="choice" id="choice-5" required />
-            <label htmlFor="choice-5">Restaurant 5, 654 Main St, Burgers (<a href="#LinkToRestaurant5">Link</a>)</label> <br />
+            {choices}
             <button type="submit">Vote!</button>
             <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
           </form>

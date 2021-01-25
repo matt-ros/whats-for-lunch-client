@@ -29,6 +29,19 @@ const TokenService = {
 
     TokenService.clearAuthToken();
     return false;
+  },
+
+  saveVotedToken(pollId) {
+    window.localStorage.setItem(`voted-${pollId}`, true);
+  },
+
+  hasVotedInPoll(pollId) {
+    if (window.localStorage.getItem(`voted-${pollId}`) === 'true') {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 };
 

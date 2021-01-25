@@ -1,5 +1,7 @@
 import React from 'react';
 import HereApiService from '../../services/here-api-service';
+import PollsApiService from '../../services/polls-api-service';
+import ItemsApiService from '../../services/items-api-service';
 import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_red.css';
@@ -9,20 +11,41 @@ class PollForm extends React.Component {
     lat: null,
     long: null,
     radius: 1,
-    restaurants: []
+    restaurants: [],
+    items: [],
+    error: null
+  }
+
+  async componentDidUpdate() {
+    if (this.props.poll && this.state.items.length === 0) {
+      try {
+        const items = await ItemsApiService.getItems(this.props.poll.id);
+        this.setState({ items });
+      }
+      catch (error) {
+        this.logError(error);
+      }
+    }
   }
 
   handleSubmitLocation = async (e) => {
     e.preventDefault();
+    this.setState({ error: null });
     const { location } = e.target;
-    const data = await HereApiService.geoSearch(location.value);
-    this.setState({
-      lat: data.items[0].position.lat,
-      long: data.items[0].position.lng
-    }, this.restaurantSearch)
+    try {
+      const data = await HereApiService.geoSearch(location.value);
+      this.setState({
+        lat: data.items[0].position.lat,
+        long: data.items[0].position.lng
+      }, this.restaurantSearch);
+    }
+    catch (error) {
+      this.logError(error);
+    }
   }
 
   handleCurrentLocation = e => {
+    this.setState({ error: null });
     navigator.geolocation.getCurrentPosition((pos) => {
       console.log(`current location ${pos.coords.latitude}, ${pos.coords.longitude}`)
       this.setState({
@@ -32,37 +55,134 @@ class PollForm extends React.Component {
     }, this.logError, { timeout: 5000 });
   }
 
-  restaurantSearch = (radius = 1) => {
-    return HereApiService.restaurantSearch(this.state.lat, this.state.long, radius)
+  restaurantSearch = () => {
+    return HereApiService.restaurantSearch(this.state.lat, this.state.long, this.state.radius)
       .then(res => {
         console.log(res)
         this.setState({
           restaurants: res.items
-        })
+        });
       })
+      .catch(error => this.logError(error));
+  }
+
+  createPollItems = indices => {
+    const items = [];
+    indices.forEach(index => {
+      const rest = this.state.restaurants[index];
+      const type = (rest.foodTypes) ? rest.foodTypes.find(type => type.primary) : null;
+      const item_cuisine = (type) ? type.name : 'Unknown';
+      const item = {
+        item_name: rest.title,
+        item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode} ${rest.address.postalCode}`,
+        item_cuisine,
+        item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
+      };
+      items.push(item);
+    });
+    this.setState({
+      items: [
+        ...this.state.items,
+        ...items
+      ]
+    });
+  }
+
+  updateRadius = radius => {
+    this.setState({ radius }, this.restaurantSearch);
   }
 
   logError = (err) => {
-    return console.log(`Error ${err.message}`);
+    this.setState({ error: err.message});
   }
 
   handleSubmitItem = e => {
     e.preventDefault();
     const { item_name, item_address, item_cuisine, item_link } = e.target;
+    const newItem = {
+      item_name: item_name.value,
+      item_address: item_address.value,
+      item_cuisine: item_cuisine.value,
+      item_link: item_link.value,
+    };
+    this.setState({
+      items: [
+        ...this.state.items,
+        newItem,
+      ]
+    });
     item_name.value = '';
     item_address.value = '';
     item_cuisine.value = '';
     item_link.value = '';
   }
 
-  handleClickPublish = () => {
-    const pollId = Math.ceil(Math.random() * 10);
-    this.props.history.push(`/poll/${pollId}`);
+  handleClickDelete = async (idx) => {
+    const itemId = (this.state.items[idx].id) ? this.state.items[idx].id : null;
+    const newPollItems = this.state.items.filter((_, index) => index !== idx);
+    this.setState({ items: newPollItems });
+    if (itemId) {
+      try {
+        await ItemsApiService.deleteItem(itemId);
+      }
+      catch (error) {
+        this.logError(error);
+      }
+    }
+  }
+
+  handleClickPublish = async () => {
+    const newPoll = {
+      poll_name: (this.state.pollName) ? this.state.pollName : '',
+      end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
+    }
+    try {
+      const poll = await PollsApiService.postPoll(newPoll);
+      await ItemsApiService.postItems(poll.id, this.state.items);
+      this.props.history.push(`/poll/${poll.id}`);
+    }
+    catch (error) {
+      this.logError(error);
+    }
+  }
+
+  handleClickUpdate = async () => {
+    const updateFields = {
+      poll_name: (this.state.pollName) ? this.state.pollName : '',
+      end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
+    }
+    const newItems = this.state.items.filter(item => !item.id);
+    try {
+      await PollsApiService.patchPoll(this.props.poll.id, updateFields);
+      await ItemsApiService.resetVotes(this.props.poll.id);
+      if (newItems.length > 0) {
+        await ItemsApiService.postItems(this.props.poll.id, newItems);
+      }
+      this.props.history.push(`/poll/${this.props.poll.id}`);
+    }
+    catch (error) {
+      this.logError(error);
+    }
   }
 
   render() {
+    const { error } = this.state;
+
+    const pollItems = this.state.items.map((item, idx) => {
+      return (
+        <li key={idx}>
+          {item.item_name}, {' '}
+          {item.item_address}, {' '}
+          {item.item_cuisine} {' '}
+          (<a href={item.item_link} target="_blank" rel="noreferrer">Google Maps</a>) {' '}
+          <button type="button" onClick={e => this.handleClickDelete(idx)}>Delete</button>
+        </li>
+      );
+    });
+
     return (
       <>
+        {error && <p className="error">{error}</p>}
         <section>
           <form onSubmit={this.handleSubmitLocation}>
             <label htmlFor="location">Enter Location for Restaurant Search: </label>
@@ -72,7 +192,14 @@ class PollForm extends React.Component {
           </form>
         </section>
 
-        {!!this.state.restaurants.length && <RestaurantListPage restaurants={this.state.restaurants} restaurantSearch={this.restaurantSearch} />}
+        {
+          !!this.state.restaurants.length &&
+          <RestaurantListPage
+            restaurants={this.state.restaurants}
+            updateRadius={this.updateRadius}
+            createPollItems={this.createPollItems}
+          />
+        }
 
         <section>
           <form onSubmit={this.handleSubmitItem}>
@@ -99,6 +226,8 @@ class PollForm extends React.Component {
               enableTime: true,
               noCalendar: true,
               dateFormat: 'H:i',
+              minDate: new Date(),
+              onChange: endTime => this.setState({ endTime: endTime[0] }),
             }}
           />
         </section>
@@ -106,16 +235,15 @@ class PollForm extends React.Component {
         <section>
           <h2>Poll Preview</h2>
           <ul>
-            <li>Restaurant 1, 123 Main St, Italian (<a href="#LinkToRestaurant1">Link</a>) <button type="button">Delete</button></li>
-            <li>Restaurant 2, 456 Main St, Sushi (<a href="#LinkToRestaurant2">Link</a>) <button type="button">Delete</button></li>
-            <li>Restaurant 3, 789 Main St, Sandwiches (<a href="#LinkToRestaurant3">Link</a>) <button type="button">Delete</button></li>
-            <li>Restaurant 4, 321 Main St, Pizza (<a href="#LinkToRestaurant4">Link</a>) <button type="button">Delete</button></li>
-            <li>Restaurant 5, 654 Main St, Burgers (<a href="#LinkToRestaurant5">Link</a>) <button type="button">Delete</button></li>
+            {pollItems}
           </ul>
         </section>
         
         <section>
-          <button type="button" onClick={this.handleClickPublish}>Publish Poll</button>
+          {(this.props.poll)
+            ? <button type="button" onClick={this.handleClickUpdate}>Update Poll</button>
+            : <button type="button" onClick={this.handleClickPublish}>Publish Poll</button>
+          }
         </section>
       </>
     );
