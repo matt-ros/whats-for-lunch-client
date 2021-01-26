@@ -23,8 +23,8 @@ class PollForm extends React.Component {
         const items = await ItemsApiService.getItems(this.props.poll.id);
         this.setState({ items });
       }
-      catch (error) {
-        this.logError(error);
+      catch (res) {
+        this.setState({ error: res.error });
       }
     }
   }
@@ -40,8 +40,8 @@ class PollForm extends React.Component {
         long: data.items[0].position.lng
       }, this.restaurantSearch);
     }
-    catch (error) {
-      this.logError(error);
+    catch (res) {
+      this.setState({ error: res.error });
     }
   }
 
@@ -64,7 +64,7 @@ class PollForm extends React.Component {
           restaurants: res.items
         });
       })
-      .catch(error => this.logError(error));
+      .catch(res => this.setState({ error: res.error }));
   }
 
   createPollItems = indices => {
@@ -145,8 +145,8 @@ class PollForm extends React.Component {
       try {
         await ItemsApiService.deleteItem(itemId);
       }
-      catch (error) {
-        this.logError(error);
+      catch (res) {
+        this.setState({ error: res.error });
       }
     }
   }
@@ -164,8 +164,8 @@ class PollForm extends React.Component {
       await ItemsApiService.postItems(poll.id, this.state.items);
       this.props.history.push(`/poll/${poll.id}`);
     }
-    catch (error) {
-      this.logError(error);
+    catch (res) {
+      this.setState({ error: res.error });
     }
   }
 
@@ -186,8 +186,8 @@ class PollForm extends React.Component {
       }
       this.props.history.push(`/poll/${this.props.poll.id}`);
     }
-    catch (error) {
-      this.logError(error);
+    catch (res) {
+      this.setState({ error: res.error });
     }
   }
 

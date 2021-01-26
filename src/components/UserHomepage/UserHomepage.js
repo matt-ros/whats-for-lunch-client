@@ -19,8 +19,8 @@ class UserHomepage extends React.Component {
         polls,
       });
     }
-    catch (error) {
-      this.setState({ error: error.message });
+    catch (res) {
+      this.setState({ error: res.error });
     }
   }
 

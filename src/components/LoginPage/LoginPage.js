@@ -26,8 +26,8 @@ class LoginPage extends React.Component {
           loggedIn: true
         }
       });
-    } catch (error) {
-      this.setState({ error: error.message });
+    } catch (res) {
+      this.setState({ error: res.error });
     }
   }
 

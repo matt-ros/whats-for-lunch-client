@@ -10,8 +10,8 @@ class EditPoll extends React.Component {
     try {
       const poll = await PollsApiService.getPoll(this.props.match.params.id);
       this.setState({ poll });
-    } catch (error) {
-      this.setState({ error: error.message });
+    } catch (res) {
+      this.setState({ error: res.error });
     }
   }
   render() {
