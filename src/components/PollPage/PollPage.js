@@ -11,24 +11,35 @@ class PollPage extends React.Component {
   }
 
   async componentDidMount() {
-    const poll = await PollsApiService.getPoll(this.props.match.params.id);
-    const items = await ItemsApiService.getItems(this.props.match.params.id);
-    this.setState({
-      poll,
-      items,
-    });
+    try {
+      const poll = await PollsApiService.getPoll(this.props.match.params.id);
+      const items = await ItemsApiService.getItems(this.props.match.params.id);
+      this.setState({
+        poll,
+        items,
+      });
+    }
+    catch (res) {
+      this.setState({ error: res.error });
+    }
   }
 
   handleSubmit = async e => {
     e.preventDefault();
     const { choice } = e.target;
-    await ItemsApiService.incrementVote(choice.value);
-    TokenService.saveVotedToken(this.props.match.params.id, this.state.poll.end_time);
-    choice.value = null;
-    this.props.history.push(`/results/${this.props.match.params.id}`);
+    try {
+      await ItemsApiService.incrementVote(choice.value);
+      TokenService.saveVotedToken(this.props.match.params.id, this.state.poll.end_time);
+      choice.value = null;
+      this.props.history.push(`/results/${this.props.match.params.id}`);
+    }
+    catch (res) {
+      this.setState({ error: res.error });
+    }
   }
 
   render() {
+    const { error } = this.state;
     const choices = this.state.items.map((item, idx) => {
       const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
@@ -42,8 +53,9 @@ class PollPage extends React.Component {
           </label>
           <br />
         </div>
-      )
-    })
+      );
+    });
+
     return (
       <>
         {
@@ -58,6 +70,7 @@ class PollPage extends React.Component {
 
         <section>
           <h2>Where do you want to eat?</h2>
+          {error && <p className="error">{error}</p>}
           <form onSubmit={this.handleSubmit}>
             {choices}
             <button type="submit">Vote!</button> {' '}

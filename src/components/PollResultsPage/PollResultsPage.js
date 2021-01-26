@@ -10,15 +10,20 @@ class PollResultsPage extends React.Component {
   }
 
   async componentDidMount() {
-    const poll = await PollsApiService.getPoll(this.props.match.params.id);
-    const items = await ItemsApiService.getItems(this.props.match.params.id);
-    this.setState({
-      poll,
-      items,
-    });
+    try {
+      const poll = await PollsApiService.getPoll(this.props.match.params.id);
+      const items = await ItemsApiService.getItems(this.props.match.params.id);
+      this.setState({
+        poll,
+        items,
+      });
+    } catch (res) {
+      this.setState({ error: res.error });
+    }
   }
   
   render() {
+    const { error } = this.state;
     const { end_time } = this.state.poll;
     const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
     const pollItems = sortedItems.map((item, idx) => {
@@ -42,6 +47,7 @@ class PollResultsPage extends React.Component {
 
         <section>
           <h2>Poll Results</h2>
+          {error && <p className="error">{error}</p>}
           <ul>
             {pollItems}
           </ul>
