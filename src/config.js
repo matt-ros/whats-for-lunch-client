@@ -4,4 +4,5 @@ module.exports = {
   SEARCH_BASE_URL: 'https://browse.search.hereapi.com/v1/browse',
   API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.121:8000/api',
   API_KEY: process.env.REACT_APP_API_KEY,
+  CLIENT_BASE_URL: process.env.REACT_APP_CLIENT_BASE_URL || 'http://192.168.1.121:3000',
 };

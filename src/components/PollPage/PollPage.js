@@ -3,11 +3,13 @@ import ItemsApiService from '../../services/items-api-service';
 import { Redirect } from 'react-router-dom';
 import PollsApiService from '../../services/polls-api-service';
 import TokenService from '../../services/token-service';
+import config from '../../config';
 
 class PollPage extends React.Component {
   state = {
     poll: {},
-    items: []
+    items: [],
+    copied: false
   }
 
   async componentDidMount() {
@@ -35,6 +37,17 @@ class PollPage extends React.Component {
     }
     catch (res) {
       this.setState({ error: res.error });
+    }
+  }
+
+  handleShare = async () => {
+    this.setState({copied: false });
+    try {
+      await navigator.clipboard.writeText(`${config.CLIENT_BASE_URL}${this.props.location.pathname}`);
+      this.setState({ copied: true });
+    }
+    catch (res) {
+      console.log(res);
     }
   }
 
@@ -76,6 +89,11 @@ class PollPage extends React.Component {
             <button type="submit">Vote!</button> {' '}
             <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
           </form>
+        </section>
+
+        <section>
+          <button type="button" onClick={this.handleShare}>Share This Poll!</button>
+          {this.state.copied && <p>Copied to Clipboard!</p>}
         </section>
       </>
     );
