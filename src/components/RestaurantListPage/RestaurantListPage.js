@@ -78,7 +78,7 @@ class RestaurantListPage extends React.Component {
         item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
       }
     });
-    const filteredChoices = restaurants.filter(rest => rest.item_cuisine.toLowerCase().includes(this.state.filter));
+    const filteredChoices = restaurants.filter(rest => rest.item_cuisine.toLowerCase().includes(this.state.filter.toLowerCase()));
     const restChoices = filteredChoices.slice(0, this.state.numChoices);
     const choices = restChoices.map((choice, idx) => {
       return (
