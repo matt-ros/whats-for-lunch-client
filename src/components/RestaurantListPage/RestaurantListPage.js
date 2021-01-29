@@ -41,11 +41,12 @@ class RestaurantListPage extends React.Component {
   }
 
   handleDeselectAll = () => {
-    const checkedItems = this.state.choices;
-    checkedItems.forEach(index => {
-      const element = document.getElementById(`choice_${index}`);
-      element.checked = false;
-    });
+    for (let i = 0; i < this.state.numChoices; i++) {
+      const element = document.getElementById(`choice_${i}`);
+      if (element) {
+        element.checked = false;
+      }
+    }
     this.setState({ choices: [] });
   }
 
@@ -68,10 +69,11 @@ class RestaurantListPage extends React.Component {
   }
 
   render() {
-    const restaurants = this.props.restaurants.map(rest => {
+    const restaurants = this.props.restaurants.map((rest, idx) => {
       const type = (rest.foodTypes) ? rest.foodTypes.find(type => type.primary) : null;
       const item_cuisine = (type) ? type.name : 'Unknown';
       return {
+        origIndex: idx,
         item_name: rest.title,
         item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode} ${rest.address.postalCode}`,
         item_cuisine,
@@ -83,12 +85,16 @@ class RestaurantListPage extends React.Component {
     const choices = restChoices.map((choice, idx) => {
       return (
         <div key={idx}>
-          <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={idx} onChange={this.handleCheckbox} />
+          <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={choice.origIndex} onChange={this.handleCheckbox} />
           <label htmlFor={`choice_${idx}`}>{choice.item_name}, {choice.item_address}, {choice.item_cuisine} (<a href={choice.item_link} target="_blank" rel="noreferrer">Google Maps</a>)</label>
           <br />
         </div>
       );
     });
+
+    const choicesLabel = (choices.length < this.state.numChoices)
+      ? <p>{`Showing all matching restaurants`}</p>
+      : <p>{`Showing ${choices.length} nearest matching restaurants`}</p>
 
     return (
       <>
@@ -98,11 +104,13 @@ class RestaurantListPage extends React.Component {
           <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} /> <br />
           <label htmlFor="radius">Search Radius (miles): </label>
           <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />{' '}
-          <button type="button" onClick={this.handleClickChange}>Change</button>
+          <button type="button" onClick={this.handleClickChange}>Change</button> <br />
+          <p>Current radius: {this.props.currentRadius} mi</p>
         </section>
 
         <section>
           <form onSubmit={this.handleSubmit}>
+            {choicesLabel}
             {choices}
             <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
             <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}
