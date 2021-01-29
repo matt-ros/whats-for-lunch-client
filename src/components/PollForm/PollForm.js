@@ -3,8 +3,6 @@ import HereApiService from '../../services/here-api-service';
 import PollsApiService from '../../services/polls-api-service';
 import ItemsApiService from '../../services/items-api-service';
 import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
-import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/material_red.css';
 import TokenService from '../../services/token-service';
 
 class PollForm extends React.Component {
@@ -191,9 +189,16 @@ class PollForm extends React.Component {
     }
   }
 
+  handleUpdateTime = e => {
+    e.preventDefault();
+    const { hours, minutes } = e.target;
+    const actualHours = Number(hours.value) + (Number(minutes.value) / 60);
+    this.setState({ endTime: new Date(Date.now() + (actualHours * 60 * 60 * 1000)) });
+  }
+
   render() {
     const { error } = this.state;
-
+    const endTime = (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000));
     const pollItems = this.state.items.map((item, idx) => {
       const linkText = (item.item_link.toLowerCase().includes('google.com/maps')) ? 'Google Maps' : 'Link';
       return (
@@ -228,6 +233,7 @@ class PollForm extends React.Component {
           !!this.state.restaurants.length &&
           <RestaurantListPage
             restaurants={this.state.restaurants}
+            currentRadius={this.state.radius}
             updateRadius={this.updateRadius}
             createPollItems={this.createPollItems}
           />
@@ -251,17 +257,25 @@ class PollForm extends React.Component {
         </section>
 
         <section>
-          <label htmlFor="poll-end-time">Poll End Time: </label>
-          <Flatpickr
-            defaultValue={new Date(Date.now() + 60 * 60 * 1000).toISOString()}
-            options={{
-              enableTime: true,
-              /* noCalendar: true, */
-              dateFormat: 'H:i',
-              minDate: new Date(),
-              onChange: endTime => this.setState({ endTime: endTime[0] }),
-            }}
-          />
+          <form onSubmit={this.handleUpdateTime}>
+            <fieldset>
+              <legend>Poll Duration</legend>
+              <label htmlFor="hours">Hours: </label>
+              <input type="number" name="hours" id="hours" min="0" defaultValue="1" /> {' '}
+              <label htmlFor="minutes">Minutes: </label>
+              <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" />
+              <button type="submit">Update</button>
+            </fieldset>
+            <p>Expires {endTime.toLocaleString(
+              [],
+              {
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+              }
+            )}</p>
+          </form>
         </section>
 
         <section>
