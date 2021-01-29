@@ -44,7 +44,9 @@ class PollPage extends React.Component {
     this.setState({copied: false });
     try {
       await navigator.clipboard.writeText(`${config.CLIENT_BASE_URL}${this.props.location.pathname}`);
-      this.setState({ copied: true });
+      this.setState({ copied: true }, setTimeout(() => {
+        this.setState({ copied: false });
+      }, 5000));
     }
     catch (res) {
       console.log(res);
@@ -71,11 +73,11 @@ class PollPage extends React.Component {
 
     return (
       <>
-        {
-          (
-            TokenService.hasVotedInPoll(this.props.match.params.id, this.state.poll.end_time) ||
-            (/* this.state.poll &&  */new Date(this.state.poll.end_time).getTime() < Date.now())
-          ) && <Redirect to={`/results/${this.props.match.params.id}`} />
+        {TokenService.hasVotedInPoll(this.props.match.params.id, this.state.poll.end_time) && 
+          <Redirect to={`/results/${this.props.match.params.id}`} />
+        }
+        {(new Date(this.state.poll.end_time).getTime() < Date.now()) &&
+          <Redirect to={`/winner/${this.props.match.params.id}`} />
         }
         <header role="banner">
           <h1>What's For Lunch?</h1>

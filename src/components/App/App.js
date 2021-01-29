@@ -12,6 +12,7 @@ import PollResultsPage from '../PollResultsPage/PollResultsPage';
 import SignupPage from '../SignupPage/SignupPage';
 import UserHomepage from '../UserHomepage/UserHomepage';
 import Nav from '../Nav/Nav';
+import WinnerPage from '../WinnerPage/WinnerPage';
 
 class App extends React.Component {
   state = {
@@ -54,6 +55,7 @@ class App extends React.Component {
           <Route path="/create" component={CreatePoll} />
           <Route path="/poll/:id" component={PollPage} />
           <Route path="/results/:id" component={PollResultsPage} />
+          <Route path="/winner/:id" component={WinnerPage} />
           <PublicOnlyRoute path="/login" component={LoginPage} />
           <PublicOnlyRoute path="/signup" component={SignupPage} />
           <PrivateRoute path="/homepage" component={UserHomepage} />

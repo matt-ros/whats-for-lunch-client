@@ -46,7 +46,7 @@ class PollResultsPage extends React.Component {
         </header>
 
         <section>
-          <h2>Poll Results</h2>
+          <h2>{(new Date(end_time) > Date.now()) ? 'Current Results' : 'Final Results'}</h2>
           {error && <p className="error">{error}</p>}
           <ul>
             {pollItems}
