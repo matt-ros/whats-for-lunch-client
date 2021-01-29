@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import TokenService from '../../services/token-service';
 import PrivateRoute from '../Utils/PrivateRoute';
 import PublicOnlyRoute from '../Utils/PublicOnlyRoute';
 import CreatePoll from '../CreatePoll/CreatePoll';
@@ -15,43 +14,12 @@ import Nav from '../Nav/Nav';
 import WinnerPage from '../WinnerPage/WinnerPage';
 
 class App extends React.Component {
-  state = {
-    loggedIn: false,
-  }
-
-  componentDidMount() {
-    this.setState({ loggedIn: TokenService.hasUnexpiredAuthToken() });
-  }
-
-  onLogout = () => {
-    this.setState({ loggedIn: false });
-  }
-
-  onLogin = () => {
-    this.setState({ loggedIn: true });
-  }
-
   render() {
     return (
       <main className="App">
-        <Route
-          render={(routeProps) => 
-            <Nav
-              history={routeProps.history}
-              onLogout={this.onLogout}
-            />
-          }
-        />
+        <Route component={Nav} />
         <Switch>
-          <Route
-            exact path="/"
-            render={(routeProps) => 
-              <LandingPage
-                location={routeProps.location}
-                onLogin={this.onLogin}
-              /> 
-            }
-          />
+          <Route exact path="/" component={LandingPage} />
           <Route path="/create" component={CreatePoll} />
           <Route path="/poll/:id" component={PollPage} />
           <Route path="/results/:id" component={PollResultsPage} />

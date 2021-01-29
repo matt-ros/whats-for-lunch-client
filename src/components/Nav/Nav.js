@@ -5,7 +5,6 @@ import TokenService from '../../services/token-service';
 class Nav extends React.Component {
   handleLogout = () => {
     TokenService.clearAuthToken();
-    this.props.onLogout();
     this.props.history.push('/');
   }
   renderLoggedIn() {

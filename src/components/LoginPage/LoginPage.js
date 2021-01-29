@@ -20,12 +20,7 @@ class LoginPage extends React.Component {
       user_name.value = '';
       password.value = '';
       TokenService.saveAuthToken(res.authToken);
-      this.props.history.push({
-        pathname: '/',
-        state: {
-          loggedIn: true
-        }
-      });
+      this.props.history.push('/homepage');
     } catch (res) {
       this.setState({ error: res.error });
     }
