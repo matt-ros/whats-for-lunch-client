@@ -41,12 +41,10 @@ class PollPage extends React.Component {
   }
 
   handleShare = async () => {
-    this.setState({copied: false });
+    // this.setState({copied: false });
     try {
       await navigator.clipboard.writeText(`${config.CLIENT_BASE_URL}${this.props.location.pathname}`);
-      this.setState({ copied: true }, setTimeout(() => {
-        this.setState({ copied: false });
-      }, 5000));
+      this.setState({ copied: true });
     }
     catch (res) {
       console.log(res);
