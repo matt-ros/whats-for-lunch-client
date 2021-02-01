@@ -25,48 +25,48 @@ class PollResultsPage extends React.Component {
   render() {
     const { error } = this.state;
     const { end_time } = this.state.poll;
+    const totalVotes = this.state.items.reduce(((acc, item) => acc + item.item_votes), 0);
+    console.log(totalVotes)
     const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
     const pollItems = sortedItems.map((item, idx) => {
+      const votePercent = (totalVotes !== 0) ? Math.floor((item.item_votes / totalVotes) * 100) : 0;
       const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
-        <li key={idx}>
-          {item.item_name}, {' '}
-          {item.item_address}, {' '}
-          {item.item_cuisine} {' '}
-          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>): {' '}
+        <li key={idx} className="poll-choice">
+          {item.item_name} <br />
+          {item.item_address} <br />
+          {item.item_cuisine} <br />
+          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) <br />
           {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
+          <br />
+          {/* <br /> */}
         </li>
       );
     });
 
     return (
-      <>
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
-
-        <section>
-          <h2>{(new Date(end_time) > Date.now()) ? 'Current Results' : 'Final Results'}</h2>
-          {error && <p className="error">{error}</p>}
-          <ul>
-            {pollItems}
-          </ul>
-          <button
-            type="button"
-            onClick={e => this.props.history.push(`/poll/${this.props.match.params.id}`)}
-            disabled={TokenService.hasVotedInPoll(this.props.match.params.id, end_time) ||
-              !(new Date(end_time).getTime() > Date.now())
-            }
-          >
-            {
-              TokenService.hasVotedInPoll(this.props.match.params.id, end_time)
-                ? 'You have already voted in this poll'
-                : (new Date(end_time).getTime() > Date.now())
-                  ? 'Vote in this Poll'
-                  : 'This Poll has Ended'}
-          </button>
-        </section>
-      </>
+      <section>
+        <h2>{(new Date(end_time) > Date.now()) ? 'Current Results' : 'Final Results'}</h2>
+        {error && <p className="error">{error}</p>}
+        <ul className="poll">
+          {pollItems}
+        </ul>
+        <button
+          type="button"
+          onClick={e => this.props.history.push(`/poll/${this.props.match.params.id}`)}
+          disabled={TokenService.hasVotedInPoll(this.props.match.params.id, end_time) ||
+            !(new Date(end_time).getTime() > Date.now())
+          }
+        >
+          Vote in this Poll
+        </button>
+        {TokenService.hasVotedInPoll(this.props.match.params.id, end_time)
+          ? 'You have already voted in this poll'
+          : (new Date(end_time).getTime() > Date.now())
+            ? null
+            : 'This poll has ended'
+        }
+      </section>
     );
   }
 }

@@ -56,12 +56,15 @@ class PollPage extends React.Component {
     const choices = this.state.items.map((item, idx) => {
       const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
-        <div key={idx}>
+        <div className="poll-choice" key={idx}>
           <input type="radio" name="choice" id={`choice_${idx}`} value={item.id} required />
           <label htmlFor={`choice_${idx}`}>
-            {item.item_name}, {' '}
-            {item.item_address}, {' '}
-            {item.item_cuisine} {' '}
+            {item.item_name}
+            <br />
+            {item.item_address}
+            <br />
+            {item.item_cuisine}
+            <br />
             (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>)
           </label>
           <br />
@@ -77,21 +80,15 @@ class PollPage extends React.Component {
         {(new Date(this.state.poll.end_time).getTime() < Date.now()) &&
           <Redirect to={`/winner/${this.props.match.params.id}`} />
         }
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
-
         <section>
           <h2>Where do you want to eat?</h2>
           {error && <p className="error">{error}</p>}
-          <form onSubmit={this.handleSubmit}>
+          <form className="poll" id="poll" onSubmit={this.handleSubmit}>
             {choices}
-            <button type="submit">Vote!</button> {' '}
-            <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
           </form>
-        </section>
-
-        <section>
+          <button type="submit" form="poll">Vote!</button> {' '}
+          <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
+          <br />
           <button type="button" onClick={this.handleShare}>Share This Poll!</button>
           {this.state.copied && <p>Copied to Clipboard!</p>}
         </section>

@@ -12,23 +12,31 @@ import SignupPage from '../SignupPage/SignupPage';
 import UserHomepage from '../UserHomepage/UserHomepage';
 import Nav from '../Nav/Nav';
 import WinnerPage from '../WinnerPage/WinnerPage';
+import ErrorBoundary from '../Utils/ErrorBoundary';
 
 class App extends React.Component {
   render() {
     return (
       <main className="App">
         <Route component={Nav} />
-        <Switch>
-          <Route exact path="/" component={LandingPage} />
-          <Route path="/create" component={CreatePoll} />
-          <Route path="/poll/:id" component={PollPage} />
-          <Route path="/results/:id" component={PollResultsPage} />
-          <Route path="/winner/:id" component={WinnerPage} />
-          <PublicOnlyRoute path="/login" component={LoginPage} />
-          <PublicOnlyRoute path="/signup" component={SignupPage} />
-          <PrivateRoute path="/homepage" component={UserHomepage} />
-          <PrivateRoute path="/edit/:id" component={EditPoll} />
-        </Switch>
+        
+        <header role="banner">
+          <h1>What's For Lunch?</h1>
+        </header>
+
+        <ErrorBoundary>
+          <Switch>
+            <PublicOnlyRoute exact path="/" component={LandingPage} />
+            <Route path="/create" component={CreatePoll} />
+            <Route path="/poll/:id" component={PollPage} />
+            <Route path="/results/:id" component={PollResultsPage} />
+            <Route path="/winner/:id" component={WinnerPage} />
+            <PublicOnlyRoute path="/login" component={LoginPage} />
+            <PublicOnlyRoute path="/signup" component={SignupPage} />
+            <PrivateRoute path="/homepage" component={UserHomepage} />
+            <PrivateRoute path="/edit/:id" component={EditPoll} />
+          </Switch>
+        </ErrorBoundary>
       </main>
     );
   }

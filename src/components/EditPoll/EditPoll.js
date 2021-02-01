@@ -19,9 +19,6 @@ class EditPoll extends React.Component {
     // const poll = (this.state.poll) ? this.state.poll : null
     return (
       <>
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
         {error && <p className="error">{error}</p>}
         <section>
           <h2>Edit Poll</h2>

@@ -12,7 +12,8 @@ class PollForm extends React.Component {
     radius: 1,
     restaurants: [],
     items: [],
-    error: null
+    error: null,
+    locError: null,
   }
 
   async componentDidUpdate() {
@@ -29,7 +30,7 @@ class PollForm extends React.Component {
 
   handleSubmitLocation = async (e) => {
     e.preventDefault();
-    this.setState({ error: null });
+    this.setState({ locError: null });
     const { location } = e.target;
     try {
       const data = await HereApiService.geoSearch(location.value);
@@ -39,12 +40,12 @@ class PollForm extends React.Component {
       }, this.restaurantSearch);
     }
     catch (res) {
-      this.setState({ error: res.error });
+      this.setState({ locError: res.error });
     }
   }
 
   handleCurrentLocation = e => {
-    this.setState({ error: null });
+    this.setState({ locError: null });
     navigator.geolocation.getCurrentPosition((pos) => {
       console.log(`current location ${pos.coords.latitude}, ${pos.coords.longitude}`)
       this.setState({
@@ -54,15 +55,16 @@ class PollForm extends React.Component {
     }, this.logError, { timeout: 5000 });
   }
 
-  restaurantSearch = () => {
-    return HereApiService.restaurantSearch(this.state.lat, this.state.long, this.state.radius)
-      .then(res => {
-        console.log(res)
-        this.setState({
-          restaurants: res.items
-        });
-      })
-      .catch(res => this.setState({ error: res.error }));
+  restaurantSearch = async () => {
+    try {
+      const response = await HereApiService.restaurantSearch(this.state.lat, this.state.long, this.state.radius);
+      console.log(response);
+      this.setState({
+        restaurants: response.items
+      });
+    } catch (res) {
+      return this.setState({ error: res.error });
+    }
   }
 
   createPollItems = indices => {
@@ -73,7 +75,7 @@ class PollForm extends React.Component {
       const item_cuisine = (type) ? type.name : 'Unknown';
       const item = {
         item_name: rest.title,
-        item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode} ${rest.address.postalCode}`,
+        item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode}`,
         item_cuisine,
         item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
       };
@@ -92,7 +94,7 @@ class PollForm extends React.Component {
   }
 
   logError = (err) => {
-    this.setState({ error: err.message});
+    this.setState({ locError: err.message });
   }
 
   renderPollNameField() {
@@ -107,7 +109,7 @@ class PollForm extends React.Component {
           defaultValue={(this.props.poll) ? this.props.poll.poll_name : ''}
         />
       </section>
-    )
+    );
   }
 
   handleChangePollName = e => {
@@ -197,17 +199,19 @@ class PollForm extends React.Component {
   }
 
   render() {
-    const { error } = this.state;
+    const { error, locError } = this.state;
     const endTime = (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000));
     const pollItems = this.state.items.map((item, idx) => {
       const linkText = (item.item_link.toLowerCase().includes('google.com/maps')) ? 'Google Maps' : 'Link';
       return (
         <li key={idx}>
-          {item.item_name}, {' '}
-          {item.item_address}, {' '}
-          {item.item_cuisine} {' '}
-          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) {' '}
+          {item.item_name} <br />
+          {item.item_address} <br />
+          {item.item_cuisine} <br />
+          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) <br />
           <button type="button" onClick={e => this.handleClickDelete(idx)}>Delete</button>
+          <br />
+          <br />
         </li>
       );
     });
@@ -221,11 +225,15 @@ class PollForm extends React.Component {
         }
 
         <section>
+          {locError && <p className="error">{locError}</p>}
           <form onSubmit={this.handleSubmitLocation}>
-            <label htmlFor="location">Enter Location for Restaurant Search: </label>
-            <input type="text" name="location" id="location" /> {' '}
-            <button type="submit">Search</button> {' '}
-            <button type="button" onClick={this.handleCurrentLocation}>Use Current Location</button>
+            <fieldset className="location">
+              <legend>Restaurant Search</legend>
+              <label htmlFor="location">Location: </label>
+              <input type="text" name="location" id="location" /> {' '}
+              <button type="submit">Search</button> {' '}
+              <button type="button" onClick={this.handleCurrentLocation}>Use Current Location</button>
+            </fieldset>
           </form>
         </section>
 
@@ -241,7 +249,7 @@ class PollForm extends React.Component {
 
         <section>
           <form onSubmit={this.handleSubmitItem}>
-            <fieldset>
+            <fieldset className="add-item">
               <legend>Add Item to Poll</legend>
               <label htmlFor="item_name">Name: </label>
               <input type="text" name="item_name" id="item_name" placeholder="Mos Eisley Cantina" required /> <br />
@@ -258,12 +266,12 @@ class PollForm extends React.Component {
 
         <section>
           <form onSubmit={this.handleUpdateTime}>
-            <fieldset>
+            <fieldset className="duration">
               <legend>Poll Duration</legend>
               <label htmlFor="hours">Hours: </label>
               <input type="number" name="hours" id="hours" min="0" defaultValue="1" /> {' '}
               <label htmlFor="minutes">Minutes: </label>
-              <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" />
+              <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" /> {' '}
               <button type="submit">Update</button>
             </fieldset>
             <p>Expires {endTime.toLocaleString(
@@ -286,6 +294,7 @@ class PollForm extends React.Component {
         </section>
         
         <section>
+          {error && <p className="error">{error}</p>}
           {(this.props.poll)
             ? <button type="button" onClick={this.handleClickUpdate}>Update Poll</button>
             : <button type="button" onClick={this.handleClickPublish}>Publish Poll</button>

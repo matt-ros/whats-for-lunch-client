@@ -30,28 +30,22 @@ class LoginPage extends React.Component {
     const { error } = this.state;
 
     return (
-      <>
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
-
-        <section>
-          <h2>Log In</h2>
-          {(error)
-            ? <div className="error">{error}</div>
-            : null }
-          <form onSubmit={this.handleSubmit}>
-            <label htmlFor="user_name">Username: </label>
-            <input type="text" name="user_name" id="user_name" /> <br />
-            <label htmlFor="password">Password: </label>
-            <input type="password" name="password" id="password" /> <br />
-            <button type="submit">Log In</button>
-          </form>
-          <p>Demo account credentials:</p>
-          <p>Username: demo</p>
-          <p>Password: Password1!</p>
-        </section>
-      </>
+      <section>
+        <h2>Log In</h2>
+        {(error)
+          ? <div className="error">{error}</div>
+          : null }
+        <form onSubmit={this.handleSubmit}>
+          <label htmlFor="user_name">Username: </label>
+          <input type="text" name="user_name" id="user_name" /> <br />
+          <label htmlFor="password">Password: </label>
+          <input type="password" name="password" id="password" /> <br />
+          <button type="submit">Log In</button>
+        </form>
+        <p>Demo account credentials:</p>
+        <p>Username: demo</p>
+        <p>Password: Password1!</p>
+      </section>
     );
   }
 }

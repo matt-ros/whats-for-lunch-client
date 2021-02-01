@@ -29,26 +29,20 @@ class SignupPage extends React.Component {
     const { error } = this.state;
 
     return (
-      <>
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
-
-        <section>
-          <h2>Sign Up!</h2>
-          {error && <p className="error">{error}</p>}
-          <form onSubmit={this.handleSubmit}>
-            <label htmlFor="full_name">Full Name: </label>
-            <input type="text" name="full_name" id="full_name" required /> <br />
-            <label htmlFor="user_name">Username: </label>
-            <input type="text" name="user_name" id="user_name" required /> <br />
-            <label htmlFor="password">Password: </label>
-            <input type="password" name="password" id="password" required /> <br />
-            <button type="submit">Sign Up!</button>
-          </form>
-        </section>
-      </>
-    )
+      <section>
+        <h2>Sign Up!</h2>
+        {error && <p className="error">{error}</p>}
+        <form onSubmit={this.handleSubmit}>
+          <label htmlFor="full_name">Full Name: </label>
+          <input type="text" name="full_name" id="full_name" required /> <br />
+          <label htmlFor="user_name">Username: </label>
+          <input type="text" name="user_name" id="user_name" required /> <br />
+          <label htmlFor="password">Password: </label>
+          <input type="password" name="password" id="password" required /> <br />
+          <button type="submit">Sign Up!</button>
+        </form>
+      </section>
+    );
   }
 }
 

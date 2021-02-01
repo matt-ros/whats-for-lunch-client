@@ -10,7 +10,9 @@ class Nav extends React.Component {
   renderLoggedIn() {
     return (
       <>
-        <Link to="/homepage">Home</Link> | <button type="button" onClick={this.handleLogout}>Log Out</button>
+        <Link to="/homepage">Home</Link>
+        <br />
+        <button type="button" onClick={this.handleLogout}>Log Out</button>
       </>
     );
   }

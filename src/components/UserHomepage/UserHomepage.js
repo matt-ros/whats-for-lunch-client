@@ -36,9 +36,6 @@ class UserHomepage extends React.Component {
     })
     return (
       <>
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
         {error && <p className="error">{error}</p>}
         <section>
           <h2>Welcome, {this.state.user.user_name}!</h2>

@@ -75,7 +75,7 @@ class RestaurantListPage extends React.Component {
       return {
         origIndex: idx,
         item_name: rest.title,
-        item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode} ${rest.address.postalCode}`,
+        item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode}`,
         item_cuisine,
         item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
       }
@@ -86,15 +86,12 @@ class RestaurantListPage extends React.Component {
       return (
         <div key={idx}>
           <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={choice.origIndex} onChange={this.handleCheckbox} />
-          <label htmlFor={`choice_${idx}`}>{choice.item_name}, {choice.item_address}, {choice.item_cuisine} (<a href={choice.item_link} target="_blank" rel="noreferrer">Google Maps</a>)</label>
+          <label htmlFor={`choice_${idx}`}>{choice.item_name} <br />{choice.item_address} <br /> {choice.item_cuisine} <br /> (<a href={choice.item_link} target="_blank" rel="noreferrer">Google Maps</a>)</label>
+          <br />
           <br />
         </div>
       );
     });
-
-    const choicesLabel = (choices.length < this.state.numChoices)
-      ? <p>{`Showing all matching restaurants`}</p>
-      : <p>{`Showing ${choices.length} nearest matching restaurants`}</p>
 
     return (
       <>
@@ -110,7 +107,7 @@ class RestaurantListPage extends React.Component {
 
         <section>
           <form onSubmit={this.handleSubmit}>
-            {choicesLabel}
+            <p>Showing {choices.length} out of {filteredChoices.length} matching restaurants</p>
             {choices}
             <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
             <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}

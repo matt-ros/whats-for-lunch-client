@@ -30,13 +30,9 @@ class WinnerPage extends React.Component {
         {(new Date(this.state.poll.end_time).getTime() > Date.now()) &&
         <Redirect to={`/poll/${this.props.match.params.id}`} />
         }
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
-
         <section>
           <h2>The winner is...</h2>
-          <h3>{this.state.winner.item_name}!!</h3>
+          <h3><a href={this.state.winner.item_link} target="_blank" rel="noreferrer">{this.state.winner.item_name}!!</a></h3>
           <Link to={`/results/${this.props.match.params.id}`}>Full Results</Link>
         </section>
       </>
