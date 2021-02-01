@@ -29,7 +29,6 @@ class PollResultsPage extends React.Component {
     console.log(totalVotes)
     const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
     const pollItems = sortedItems.map((item, idx) => {
-      const votePercent = (totalVotes !== 0) ? Math.floor((item.item_votes / totalVotes) * 100) : 0;
       const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
         <li key={idx} className="poll-choice">

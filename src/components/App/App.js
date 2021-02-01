@@ -13,6 +13,7 @@ import UserHomepage from '../UserHomepage/UserHomepage';
 import Nav from '../Nav/Nav';
 import WinnerPage from '../WinnerPage/WinnerPage';
 import ErrorBoundary from '../Utils/ErrorBoundary';
+import Success from '../Success/Success';
 
 class App extends React.Component {
   render() {
@@ -28,6 +29,7 @@ class App extends React.Component {
           <Switch>
             <PublicOnlyRoute exact path="/" component={LandingPage} />
             <Route path="/create" component={CreatePoll} />
+            <Route path="/success" component={Success} />
             <Route path="/poll/:id" component={PollPage} />
             <Route path="/results/:id" component={PollResultsPage} />
             <Route path="/winner/:id" component={WinnerPage} />

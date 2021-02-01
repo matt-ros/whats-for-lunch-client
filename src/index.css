@@ -95,6 +95,10 @@ fieldset {
   width: 20em;
 }
 
+input {
+  font-family: 'Cabin', sans-serif;
+}
+
 input[type=number] {
   width: 5em;
 }
@@ -137,6 +141,10 @@ button {
   padding: 3px 8px;
   background-color: #832B08;
   color: #FAEBD7;
+}
+
+button:active {
+  background-color: black;
 }
 
 button:disabled {

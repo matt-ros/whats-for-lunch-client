@@ -69,7 +69,9 @@ class RestaurantListPage extends React.Component {
   }
 
   render() {
-    const restaurants = this.props.restaurants.map((rest, idx) => {
+    const { error, locError } = this.props;
+    const { radius } = this.props.values;
+    const restaurants = this.props.values.restaurants.map((rest, idx) => {
       const type = (rest.foodTypes) ? rest.foodTypes.find(type => type.primary) : null;
       const item_cuisine = (type) ? type.name : 'Unknown';
       return {
@@ -97,12 +99,14 @@ class RestaurantListPage extends React.Component {
       <>
         <section>
           <h2>Choose Restaurants</h2>
+          {error && <p className="error">{error}</p>}
+          {locError && <p className="error">{locError}</p>}
           <label htmlFor="cuisine">Filter by Cuisine: </label>
           <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} /> <br />
           <label htmlFor="radius">Search Radius (miles): </label>
           <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />{' '}
           <button type="button" onClick={this.handleClickChange}>Change</button> <br />
-          <p>Current radius: {this.props.currentRadius} mi</p>
+          <p>Current radius: {radius} mi</p>
         </section>
 
         <section>
@@ -114,6 +118,8 @@ class RestaurantListPage extends React.Component {
             <button type="button" onClick={this.handleGetMore}>Get more restaurants</button> {' '}
             <button type="submit">Add restaurants to poll</button>
           </form>
+          <button type="button" onClick={this.props.prevStep}>Back</button>
+          <button type="button" onClick={this.props.nextStep}>Next</button>
         </section>
       </>
     );
@@ -121,7 +127,9 @@ class RestaurantListPage extends React.Component {
 }
 
 RestaurantListPage.defaultProps = {
-  restaurants: []
+  values: {
+    restaurants: []
+  }
 }
 
 export default RestaurantListPage;

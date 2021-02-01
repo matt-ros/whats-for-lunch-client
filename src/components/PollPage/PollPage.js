@@ -3,7 +3,6 @@ import ItemsApiService from '../../services/items-api-service';
 import { Redirect } from 'react-router-dom';
 import PollsApiService from '../../services/polls-api-service';
 import TokenService from '../../services/token-service';
-import config from '../../config';
 
 class PollPage extends React.Component {
   state = {
@@ -43,7 +42,7 @@ class PollPage extends React.Component {
   handleShare = async () => {
     // this.setState({copied: false });
     try {
-      await navigator.clipboard.writeText(`${config.CLIENT_BASE_URL}${this.props.location.pathname}`);
+      await navigator.clipboard.writeText(window.location.href);
       this.setState({ copied: true });
     }
     catch (res) {

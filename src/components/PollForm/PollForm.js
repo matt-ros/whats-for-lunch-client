@@ -3,10 +3,17 @@ import HereApiService from '../../services/here-api-service';
 import PollsApiService from '../../services/polls-api-service';
 import ItemsApiService from '../../services/items-api-service';
 import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
-import TokenService from '../../services/token-service';
+import PollNameForm from '../PollNameForm/PollNameForm';
+import LocationForm from '../LocationForm/LocationForm';
+import AddItemForm from '../AddItemForm/AddItemForm';
+import DurationForm from '../DurationForm/DurationForm';
+import Preview from '../Preview/Preview';
 
 class PollForm extends React.Component {
   state = {
+    step: 1,
+    pollName: '',
+    endTime: null,
     lat: null,
     long: null,
     radius: 1,
@@ -38,6 +45,7 @@ class PollForm extends React.Component {
         lat: data.items[0].position.lat,
         long: data.items[0].position.lng
       }, this.restaurantSearch);
+      this.nextStep();
     }
     catch (res) {
       this.setState({ locError: res.error });
@@ -53,6 +61,7 @@ class PollForm extends React.Component {
         long: pos.coords.longitude
       }, this.restaurantSearch);
     }, this.logError, { timeout: 5000 });
+    this.nextStep();
   }
 
   restaurantSearch = async () => {
@@ -95,21 +104,6 @@ class PollForm extends React.Component {
 
   logError = (err) => {
     this.setState({ locError: err.message });
-  }
-
-  renderPollNameField() {
-    return (
-      <section>
-        <label htmlFor="pollName">Poll Name: </label>
-        <input
-          type="text"
-          name="pollName"
-          id="pollName"
-          onChange={this.handleChangePollName}
-          defaultValue={(this.props.poll) ? this.props.poll.poll_name : ''}
-        />
-      </section>
-    );
   }
 
   handleChangePollName = e => {
@@ -162,7 +156,12 @@ class PollForm extends React.Component {
     try {
       const poll = await PollsApiService.postPoll(newPoll);
       await ItemsApiService.postItems(poll.id, this.state.items);
-      this.props.history.push(`/poll/${poll.id}`);
+      this.props.history.push({
+        pathname: '/success',
+        state: {
+          pollId: poll.id
+        }
+      });
     }
     catch (res) {
       this.setState({ error: res.error });
@@ -174,7 +173,7 @@ class PollForm extends React.Component {
       return this.setState({ error: 'Please add some items to your poll' });
     }
     const updateFields = {
-      poll_name: (this.state.pollName) ? this.state.pollName : '',
+      poll_name: (this.state.pollName) ? this.state.pollName : this.props.poll.poll_name,
       end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
     }
     const newItems = this.state.items.filter(item => !item.id);
@@ -184,7 +183,12 @@ class PollForm extends React.Component {
       if (newItems.length > 0) {
         await ItemsApiService.postItems(this.props.poll.id, newItems);
       }
-      this.props.history.push(`/poll/${this.props.poll.id}`);
+      this.props.history.push({
+        pathname: '/success',
+        state: {
+          pollId: this.props.poll.id
+        }
+      });
     }
     catch (res) {
       this.setState({ error: res.error });
@@ -198,111 +202,103 @@ class PollForm extends React.Component {
     this.setState({ endTime: new Date(Date.now() + (actualHours * 60 * 60 * 1000)) });
   }
 
+  nextStep = () => {
+    const { step } = this.state;
+    this.setState({
+      step: step + 1
+    });
+  }
+
+  prevStep = () => {
+    const { step } = this.state;
+    this.setState({
+      step: step - 1
+    });
+  }
+
   render() {
     const { error, locError } = this.state;
-    const endTime = (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000));
-    const pollItems = this.state.items.map((item, idx) => {
-      const linkText = (item.item_link.toLowerCase().includes('google.com/maps')) ? 'Google Maps' : 'Link';
-      return (
-        <li key={idx}>
-          {item.item_name} <br />
-          {item.item_address} <br />
-          {item.item_cuisine} <br />
-          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) <br />
-          <button type="button" onClick={e => this.handleClickDelete(idx)}>Delete</button>
-          <br />
-          <br />
-        </li>
-      );
-    });
+    const { step } = this.state;
+    const { pollName, endTime, radius, restaurants, items } = this.state;
+    const { poll } = this.props;
+    const values = { pollName, endTime, radius, restaurants, items };
+    if (!pollName && poll) {
+      values.pollName = poll.poll_name;
+    }
 
-    return (
-      <>
-        {error && <p className="error">{error}</p>}
-        {TokenService.hasUnexpiredAuthToken()
-          ? this.renderPollNameField()
-          : null
-        }
-
-        <section>
-          {locError && <p className="error">{locError}</p>}
-          <form onSubmit={this.handleSubmitLocation}>
-            <fieldset className="location">
-              <legend>Restaurant Search</legend>
-              <label htmlFor="location">Location: </label>
-              <input type="text" name="location" id="location" /> {' '}
-              <button type="submit">Search</button> {' '}
-              <button type="button" onClick={this.handleCurrentLocation}>Use Current Location</button>
-            </fieldset>
-          </form>
-        </section>
-
-        {
-          !!this.state.restaurants.length &&
+    switch (step) {
+      case 1:
+        return (
+          <PollNameForm
+            nextStep={this.nextStep}
+            handleChangePollName={this.handleChangePollName}
+            error={error}
+            values={values}
+          />
+        );
+    
+      case 2:
+        return (
+          <LocationForm
+            nextStep={this.nextStep}
+            prevStep={this.prevStep}
+            handleSubmitLocation={this.handleSubmitLocation}
+            handleCurrentLocation={this.handleCurrentLocation}
+            locError={locError}
+            error={error}
+          />
+        );
+    
+      case 3:
+        return (
           <RestaurantListPage
-            restaurants={this.state.restaurants}
-            currentRadius={this.state.radius}
+            nextStep={this.nextStep}
+            prevStep={this.prevStep}
             updateRadius={this.updateRadius}
             createPollItems={this.createPollItems}
+            locError={locError}
+            error={error}
+            values={values}
           />
-        }
-
-        <section>
-          <form onSubmit={this.handleSubmitItem}>
-            <fieldset className="add-item">
-              <legend>Add Item to Poll</legend>
-              <label htmlFor="item_name">Name: </label>
-              <input type="text" name="item_name" id="item_name" placeholder="Mos Eisley Cantina" required /> <br />
-              <label htmlFor="item_address">Address: </label>
-              <input type="text" name="item_address" id="item_address" placeholder="100 Mos Eisley Ave, Mos Eisley, Tatooine" /> <br />
-              <label htmlFor="item_cuisine">Cuisine: </label>
-              <input type="text" name="item_cuisine" id="item_cuisine" placeholder="Bar Food" /> <br />
-              <label htmlFor="item_link">Link: </label>
-              <input type="url" name="item_link" id="item_link" placeholder="http://www.moseisleycantina.com" /> <br />
-            </fieldset>
-            <button type="submit">Add</button>
-          </form>
-        </section>
-
-        <section>
-          <form onSubmit={this.handleUpdateTime}>
-            <fieldset className="duration">
-              <legend>Poll Duration</legend>
-              <label htmlFor="hours">Hours: </label>
-              <input type="number" name="hours" id="hours" min="0" defaultValue="1" /> {' '}
-              <label htmlFor="minutes">Minutes: </label>
-              <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" /> {' '}
-              <button type="submit">Update</button>
-            </fieldset>
-            <p>Expires {endTime.toLocaleString(
-              [],
-              {
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric'
-              }
-            )}</p>
-          </form>
-        </section>
-
-        <section>
-          <h2>Poll Preview</h2>
-          <ul>
-            {pollItems}
-          </ul>
-        </section>
-        
-        <section>
-          {error && <p className="error">{error}</p>}
-          {(this.props.poll)
-            ? <button type="button" onClick={this.handleClickUpdate}>Update Poll</button>
-            : <button type="button" onClick={this.handleClickPublish}>Publish Poll</button>
-          } {' '}
-          <button type="button" onClick={e => this.props.history.goBack()}>Cancel</button>
-        </section>
-      </>
-    );
+        );
+    
+      case 4:
+        return (
+          <AddItemForm
+            nextStep={this.nextStep}
+            prevStep={this.prevStep}
+            handleSubmitItem={this.handleSubmitItem}
+            error={error}
+          />
+        );
+    
+      case 5:
+        return (
+          <DurationForm
+            nextStep={this.nextStep}
+            prevStep={this.prevStep}
+            handleUpdateTime={this.handleUpdateTime}
+            error={error}
+            values={values}
+          />
+        );
+    
+      case 6:
+        return (
+          <Preview
+            prevStep={this.prevStep}
+            handleClickDelete={this.handleClickDelete}
+            handleClickUpdate={this.handleClickUpdate}
+            handleClickPublish={this.handleClickPublish}
+            poll={poll}
+            error={error}
+            values={values}
+          />
+        );
+    
+      default:
+        return <button type="button" onClick={e => this.setState({ step: 1 })}>Restart</button>;
+    }
   }
 }
 
