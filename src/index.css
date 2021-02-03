@@ -6,8 +6,8 @@
 
 html {
   background: linear-gradient(
-    rgba(255, 255, 255, 0.6),
-    rgba(255, 255, 255, 0.6)
+    rgba(29, 29, 29, 0.8),
+    rgba(29, 29, 29, 0.8)
   ),
   url(./assets/images/bgimage.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -17,21 +17,18 @@ html {
 }
 
 body {
+  margin-top: calc(10% + 60px);
   font-family: 'Cabin', sans-serif; 
   font-size: 20px;
-  color: #444;
+  color: #ddd;
   text-align: center;
   line-height: 1.5;
 }
 
-nav,
-footer {
-  padding: 1% 0;
-  background-color: #B0C4DE;
-  max-width: 100vw;
-}
-
 nav {
+  padding: 1% 0;
+  background-color: #1B6194;
+  max-width: 100vw;
   position: fixed;
   top: 0;
   left: 0;
@@ -39,9 +36,26 @@ nav {
   z-index: 10;
 }
 
-header {
+h1 {
   font-family: 'Ribeye', cursive;
-  padding: calc(5% + 60px) 0 5% 0;
+  font-size: 40px;
+  color: #ddd;
+}
+
+h2 {
+  font-family: 'Ribeye', cursive;
+  font-size: 33px;
+}
+
+h3 {
+  font-family: 'Ribeye', cursive;
+  font-size: 25px;
+}
+
+hr {
+  width: 90%;
+  border: 1px solid #ddd;
+  display: none;
 }
 
 section {
@@ -49,17 +63,21 @@ section {
   border-radius: 10px;
   margin: 10px 0;
   padding: 2% 0;
-  background-color: #B0C4DE;
+  background-color: rgba(27, 97, 148, 0.8);
+}
+
+.rest-list {
+  background-color: rgba(0, 0, 0, 0);
 }
 
 a {
-  color: #444;
+  color: #fff;
   text-decoration: none;
   font-weight: bold;
 }
 
 a:hover, a:active {
-  color: #777;
+  color: #aaa;
 }
 
 /* section:nth-child(even) {
@@ -77,12 +95,24 @@ fieldset {
   margin: auto;
   text-align: left;
   border-color: #fff;
+  border: none;
 }
 
 .duration, .location {
-  padding: 0;
+  padding: 0 5px;
   max-width: 90vw;
   text-align: center;
+}
+
+.duration {
+  max-width: 95vw;
+}
+
+legend {
+  width: 100%;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .add-item {
@@ -96,7 +126,12 @@ fieldset {
 }
 
 input {
-  font-family: 'Cabin', sans-serif;
+  font-family: inherit;
+}
+
+input:not([type=radio], [type=checkbox]) {
+  border-radius: 5px;
+  margin: auto 5px;
 }
 
 input[type=number] {
@@ -107,17 +142,16 @@ input[type=radio] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-
   border-radius: 50%;
   width: 16px;
   height: 16px;
-
-  border: 2px solid #832B08;
+  background-color: whitesmoke;
+  border: 1px solid #000000;
   transition: 0.2s;
 }
 
 input[type=radio]:checked {
-  border: 6px solid #832B08;
+  border: 6px solid #E03634;
 }
 
 input[type=checkbox] {
@@ -126,34 +160,71 @@ input[type=checkbox] {
   appearance: none;
   width: 16px;
   height: 16px;
-  border: 1px solid #832B08;
+  background-color: whitesmoke;
+  border: 1px solid #000000;
   transition: 0.2s;
 }
 
 input[type=checkbox]:checked {
-  border: 8px solid #832B08;
+  border: 8px solid #E03634;
 }
 
 button {
-  border: 1px solid #000;
+  border: 1px outset #000;
   border-radius: 5px;
   margin: 5px;
-  padding: 3px 8px;
-  background-color: #832B08;
+  padding: 5px 10px;
+  background-color: #E03634;
   color: #FAEBD7;
+  font-size: 15px;
 }
 
 button:active {
-  background-color: black;
+  border: 1px inset #000;
+  background-color: #333;
 }
 
 button:disabled {
   display: none;
 }
 
-.poll-choice {
+button.logout {
+  color: #fff;
+  font-family: inherit;
+  font-weight: bold;
+  border: none;
+  background-color: inherit;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button.logout:hover, button.logout:active {
+  color: #aaa;
+}
+
+.poll-choice, .restaurants div {
   width: max-content;
+  max-width: 90%;
   margin: auto auto 30px auto;
+}
+
+.signup, .login {
+  width: max-content;
+  margin: auto;
+}
+
+.signup div, .login div {
+  width: 100%;
+  margin: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media all and (min-width: 350px) {
+  input {
+    font-size: 15px;
+  }
 }
 
 @media all and (min-width: 800px) {
@@ -182,14 +253,14 @@ button:disabled {
     max-width: 100%;
   }
 
-  .poll {
+  .poll, .restaurants {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     margin: auto;
   }
 
-  .poll-choice {
+  .poll-choice, .restaurants div {
     display: inline-block;
     width: 48%;
   }

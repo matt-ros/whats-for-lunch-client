@@ -20,10 +20,6 @@ class App extends React.Component {
     return (
       <main className="App">
         <Route component={Nav} />
-        
-        <header role="banner">
-          <h1>What's For Lunch?</h1>
-        </header>
 
         <ErrorBoundary>
           <Switch>

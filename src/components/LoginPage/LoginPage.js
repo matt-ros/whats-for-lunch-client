@@ -32,16 +32,18 @@ class LoginPage extends React.Component {
     return (
       <section>
         <h2>Log In</h2>
-        {(error)
-          ? <div className="error">{error}</div>
-          : null }
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="user_name">Username: </label>
-          <input type="text" name="user_name" id="user_name" /> <br />
-          <label htmlFor="password">Password: </label>
-          <input type="password" name="password" id="password" /> <br />
-          <button type="submit">Log In</button>
+        {error && <p className="error">{error}</p>}
+        <form className="login" id="login" onSubmit={this.handleSubmit}>
+          <div>
+            <label htmlFor="user_name">Username: </label>
+            <input type="text" name="user_name" id="user_name" />
+          </div>
+          <div>
+            <label htmlFor="password">Password: </label>
+            <input type="password" name="password" id="password" />
+          </div>
         </form>
+        <button type="submit" form="login">Log In</button>
         <p>Demo account credentials:</p>
         <p>Username: demo</p>
         <p>Password: Password1!</p>

@@ -13,7 +13,7 @@ class DurationForm extends React.Component {
             <label htmlFor="hours">Hours: </label>
             <input type="number" name="hours" id="hours" min="0" defaultValue="1" /> {' '}
             <label htmlFor="minutes">Minutes: </label>
-            <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" /> {' '}
+            <input type="number" name="minutes" id="minutes" min="0" max="55" step="5" defaultValue="0" /> <br />
             <button type="submit">Update</button>
           </fieldset>
           <p>Expires {endTime.toLocaleString(

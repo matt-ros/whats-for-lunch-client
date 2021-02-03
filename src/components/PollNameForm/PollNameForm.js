@@ -14,6 +14,7 @@ class PollNameForm extends React.Component {
           onChange={this.props.handleChangePollName}
           defaultValue={this.props.values.pollName}
         />
+        <br />
         <button type="button" onClick={this.props.nextStep}>Next</button>
       </section>
     );

@@ -29,13 +29,12 @@ class PollResultsPage extends React.Component {
     console.log(totalVotes)
     const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
     const pollItems = sortedItems.map((item, idx) => {
-      const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
         <li key={idx} className="poll-choice">
           {item.item_name} <br />
           {item.item_address} <br />
           {item.item_cuisine} <br />
-          (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>) <br />
+          <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a> <br />
           {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
           <br />
           {/* <br /> */}

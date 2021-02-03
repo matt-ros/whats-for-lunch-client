@@ -12,14 +12,18 @@ class Nav extends React.Component {
       <>
         <Link to="/homepage">Home</Link>
         <br />
-        <button type="button" onClick={this.handleLogout}>Log Out</button>
+        <button type="button" className="logout" onClick={this.handleLogout}>Log Out</button>
       </>
     );
   }
 
   renderLoggedOut() {
     return (
-      <Link to="/">Home</Link>
+      <>
+        <Link to="/">Home</Link>
+        <br />
+        <Link to="/login">Log In</Link> | <Link to="/signup">Sign Up</Link>
+      </>
     );
   }
 

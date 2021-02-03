@@ -53,7 +53,6 @@ class PollPage extends React.Component {
   render() {
     const { error } = this.state;
     const choices = this.state.items.map((item, idx) => {
-      const linkText = (item.item_link.toLowerCase().includes('google')) ? 'Google Maps' : 'Link';
       return (
         <div className="poll-choice" key={idx}>
           <input type="radio" name="choice" id={`choice_${idx}`} value={item.id} required />
@@ -64,7 +63,7 @@ class PollPage extends React.Component {
             <br />
             {item.item_cuisine}
             <br />
-            (<a href={item.item_link} target="_blank" rel="noreferrer">{linkText}</a>)
+            <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>
           </label>
           <br />
         </div>

@@ -5,32 +5,23 @@ class LandingPage extends React.Component {
   render() {
     return (
       <>
-        <section>
-          Never have trouble deciding where to eat again!
-        </section>
-
-        <section>
-          Create a poll with a list of local restaurants
-        </section>
-
-        <section>
-          Send a link to your group
-        </section>
-
-        <section>
-          After everyone votes, enjoy lunch at the winning spot!
-        </section>
+        <header role="banner">
+          <h1>What's For Lunch?</h1>
+        </header>
         
         <section>
-          <Link to="/create" className="landing">Create a Poll!</Link>
-        </section>
-
-        <section>
-          Or, <Link to="/signup" className="landing">Sign Up</Link> to be able to save and reuse polls!
-        </section>
-
-        <section>
-          Already have an account?  <Link to="/login" className="landing">Log In!</Link>
+          Create a poll with a list of local restaurants
+          <br />
+          <br />
+          Send a link to your group
+          <br />
+          <br />
+          After everyone votes, enjoy lunch at the winning spot!
+          <br />
+          <br />
+          Never have trouble deciding where to eat again!
+          
+          <h2><Link to="/create" className="landing">Get Started!</Link></h2>
         </section>
       </>
     );

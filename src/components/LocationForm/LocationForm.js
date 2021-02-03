@@ -7,8 +7,8 @@ class LocationForm extends React.Component {
       <section>
         {error && <p className="error">{error}</p>}
         {locError && <p className="error">{locError}</p>}
-        <form onSubmit={this.props.handleSubmitLocation}>
-          <label htmlFor="location">Search Location: </label>
+        <form className="loc-form" onSubmit={this.props.handleSubmitLocation}>
+          <label htmlFor="location">Location: </label>
           <input type="text" name="location" id="location" /> {' '}
           <button type="submit">Search</button> {' '}
           <button type="button" onClick={this.props.handleCurrentLocation}>Use Current Location</button>

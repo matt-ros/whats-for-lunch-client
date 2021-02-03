@@ -32,15 +32,22 @@ class SignupPage extends React.Component {
       <section>
         <h2>Sign Up!</h2>
         {error && <p className="error">{error}</p>}
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="full_name">Full Name: </label>
-          <input type="text" name="full_name" id="full_name" required /> <br />
-          <label htmlFor="user_name">Username: </label>
-          <input type="text" name="user_name" id="user_name" required /> <br />
-          <label htmlFor="password">Password: </label>
-          <input type="password" name="password" id="password" required /> <br />
-          <button type="submit">Sign Up!</button>
+        <p>Creating an account allows you to edit and reuse your polls</p>
+        <form className="signup" id="signup" onSubmit={this.handleSubmit}>
+          <div>
+            <label htmlFor="full_name">Full Name: </label>
+            <input type="text" name="full_name" id="full_name" required />
+          </div>
+          <div>
+            <label htmlFor="user_name">Username: </label>
+            <input type="text" name="user_name" id="user_name" required />
+          </div>
+          <div>
+            <label htmlFor="password">Password: </label>
+            <input type="password" name="password" id="password" required />
+          </div>
         </form>
+        <button type="submit" form="signup">Sign Up!</button>
       </section>
     );
   }

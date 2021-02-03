@@ -203,6 +203,10 @@ class PollForm extends React.Component {
   }
 
   nextStep = () => {
+    this.setState({
+      error: null, 
+      locError: null
+    });
     const { step } = this.state;
     this.setState({
       step: step + 1
@@ -210,6 +214,10 @@ class PollForm extends React.Component {
   }
 
   prevStep = () => {
+    this.setState({
+      error: null,
+      locError: null
+    });
     const { step } = this.state;
     this.setState({
       step: step - 1

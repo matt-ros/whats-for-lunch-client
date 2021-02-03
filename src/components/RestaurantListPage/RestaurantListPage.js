@@ -88,9 +88,15 @@ class RestaurantListPage extends React.Component {
       return (
         <div key={idx}>
           <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={choice.origIndex} onChange={this.handleCheckbox} />
-          <label htmlFor={`choice_${idx}`}>{choice.item_name} <br />{choice.item_address} <br /> {choice.item_cuisine} <br /> (<a href={choice.item_link} target="_blank" rel="noreferrer">Google Maps</a>)</label>
-          <br />
-          <br />
+          <label htmlFor={`choice_${idx}`}>
+            {choice.item_name}
+            <br />
+            {choice.item_address}
+            <br />
+            {choice.item_cuisine}
+            <br />
+            <a href={choice.item_link} target="_blank" rel="noreferrer">More Info</a>
+          </label>
         </div>
       );
     });
@@ -98,26 +104,25 @@ class RestaurantListPage extends React.Component {
     return (
       <>
         <section>
-          <h2>Choose Restaurants</h2>
+          <h3>Choose Restaurants</h3>
           {error && <p className="error">{error}</p>}
           {locError && <p className="error">{locError}</p>}
-          <label htmlFor="cuisine">Filter by Cuisine: </label>
+          <label htmlFor="cuisine">Cuisine Filter: </label>
           <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} /> <br />
           <label htmlFor="radius">Search Radius (miles): </label>
           <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />{' '}
-          <button type="button" onClick={this.handleClickChange}>Change</button> <br />
+          <button type="button" onClick={this.handleClickChange}>Update Radius</button> <br />
           <p>Current radius: {radius} mi</p>
-        </section>
 
-        <section>
-          <form onSubmit={this.handleSubmit}>
-            <p>Showing {choices.length} out of {filteredChoices.length} matching restaurants</p>
+          <p>Showing {choices.length} out of {filteredChoices.length} matching restaurants</p>
+          <form className="restaurants" id="restaurants" onSubmit={this.handleSubmit}>
             {choices}
-            <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
-            <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}
-            <button type="button" onClick={this.handleGetMore}>Get more restaurants</button> {' '}
-            <button type="submit">Add restaurants to poll</button>
           </form>
+          <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
+          <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}
+          <button type="button" onClick={this.handleGetMore}>Get more restaurants</button> {' '}
+          <button type="submit" form="restaurants">Add restaurants to poll</button>
+          <br />
           <button type="button" onClick={this.props.prevStep}>Back</button>
           <button type="button" onClick={this.props.nextStep}>Next</button>
         </section>
