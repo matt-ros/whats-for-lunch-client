@@ -87,8 +87,8 @@ class PollPage extends React.Component {
           <button type="submit" form="poll">Vote!</button> {' '}
           <button type="button" onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}>View Results</button>
           <br />
-          <button type="button" onClick={this.handleShare}>Share This Poll!</button>
           {this.state.copied && <p>Copied to Clipboard!</p>}
+          <button type="button" onClick={this.handleShare}>Share This Poll!</button>
         </section>
       </>
     );

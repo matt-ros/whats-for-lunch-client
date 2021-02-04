@@ -31,11 +31,17 @@ class PollResultsPage extends React.Component {
     const pollItems = sortedItems.map((item, idx) => {
       return (
         <li key={idx} className="poll-choice">
-          {item.item_name} <br />
-          {item.item_address} <br />
-          {item.item_cuisine} <br />
-          <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a> <br />
-          {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
+          {item.item_name}
+          <br />
+          {item.item_address}
+          <br />
+          {item.item_cuisine}
+          <br />
+          <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>
+          <br />
+          <span className="votes">
+            {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
+          </span>
           <br />
           {/* <br /> */}
         </li>

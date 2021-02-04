@@ -149,6 +149,7 @@ class PollForm extends React.Component {
     if (this.state.items.length === 0) {
       return this.setState({ error: 'Please add some items to your poll' });
     }
+    this.setState({ working: true });
     const newPoll = {
       poll_name: (this.state.pollName) ? this.state.pollName : '',
       end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
@@ -172,6 +173,7 @@ class PollForm extends React.Component {
     if (this.state.items.length === 0) {
       return this.setState({ error: 'Please add some items to your poll' });
     }
+    this.setState({ working: true });
     const updateFields = {
       poll_name: (this.state.pollName) ? this.state.pollName : this.props.poll.poll_name,
       end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
@@ -227,6 +229,7 @@ class PollForm extends React.Component {
   render() {
     const { error, locError } = this.state;
     const { step } = this.state;
+    const { working } = this.state;
     const { pollName, endTime, radius, restaurants, items } = this.state;
     const { poll } = this.props;
     const values = { pollName, endTime, radius, restaurants, items };
@@ -299,6 +302,7 @@ class PollForm extends React.Component {
             handleClickUpdate={this.handleClickUpdate}
             handleClickPublish={this.handleClickPublish}
             poll={poll}
+            working={working}
             error={error}
             values={values}
           />

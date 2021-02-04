@@ -20,7 +20,7 @@ body {
   margin-top: calc(10% + 60px);
   font-family: 'Cabin', sans-serif; 
   font-size: 20px;
-  color: #ddd;
+  color: #eee;
   text-align: center;
   line-height: 1.5;
 }
@@ -40,6 +40,7 @@ h1 {
   font-family: 'Ribeye', cursive;
   font-size: 40px;
   color: #ddd;
+  margin-top: -5%;
 }
 
 h2 {
@@ -58,16 +59,17 @@ hr {
   display: none;
 }
 
+.votes {
+  font-size: 25px;
+  font-weight: bold;
+}
+
 section {
   /* min-height: 200px; */
   border-radius: 10px;
   margin: 10px 0;
   padding: 2% 0;
   background-color: rgba(27, 97, 148, 0.8);
-}
-
-.rest-list {
-  background-color: rgba(0, 0, 0, 0);
 }
 
 a {

@@ -2,7 +2,7 @@ import React from 'react';
 
 class Preview extends React.Component {
   render() {
-    const { error } = this.props;
+    const { error, working } = this.props;
     const endTime = (this.props.values.endTime) ? this.props.values.endTime : new Date(Date.now() + (60 * 60 * 1000));
     const pollItems = this.props.values.items.map((item, idx) => {
       return (
@@ -36,11 +36,12 @@ class Preview extends React.Component {
               minute: 'numeric'
             }
           )}</p>
-        <button type="button" onClick={this.props.prevStep}>Back</button>
+        {working && <p>{working}</p>}
+        <button type="button" onClick={this.props.prevStep}>Back</button> {' '}
         {(this.props.poll)
           ? <button type="button" onClick={this.props.handleClickUpdate}>Update Poll</button>
           : <button type="button" onClick={this.props.handleClickPublish}>Publish Poll</button>
-        } {' '}
+        }
       </section>
     );
   }
