@@ -23,13 +23,35 @@ class UserHomepage extends React.Component {
     }
   }
 
+  handleClickDelete = async (id) => {
+    this.setState({ error: null });
+    try {
+      await PollsApiService.deletePoll(id);
+      const newPolls = this.state.polls.filter(poll => poll.id !== id);
+      this.setState({ polls: newPolls });
+    } catch (res) {
+      this.setState({ error: res.error });
+    }
+  }
+
+  handleClickEdit = id => {
+    const poll = this.state.polls.find(poll => poll.id === id);
+    this.props.history.push({ pathname: `/edit/${poll.id}`, state: { poll } });
+  }
+
   render() {
     const { error } = this.state;
     const savedPolls = this.state.polls.map((poll, idx) => {
       const pollName = (poll.poll_name) ? poll.poll_name : `Unnamed Poll ${poll.id}`;
       return (
         <li key={idx}>
-          <Link to={{ pathname: `/edit/${poll.id}`, state: { poll } }}>{pollName}</Link>
+          <Link to={`/poll/${poll.id}`}>{pollName}</Link>
+          {' '}
+          <span className="buttons">
+            <button type="button" onClick={e => this.handleClickEdit(poll.id)}>Edit</button>
+            {' '}
+            <button type="button" onClick={e => this.handleClickDelete(poll.id)}>Delete</button>
+          </span>
         </li>
       );
     });

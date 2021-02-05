@@ -212,6 +212,10 @@ button.logout:hover, button.logout:active {
   justify-content: space-between;
 }
 
+.buttons {
+  display: inline-block;
+}
+
 @media all and (min-width: 350px) {
   input {
     font-size: 15px;
