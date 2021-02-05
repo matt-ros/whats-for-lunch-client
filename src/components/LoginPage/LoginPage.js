@@ -15,6 +15,7 @@ class LoginPage extends React.Component {
       user_name: user_name.value,
       password: password.value
     };
+    
     try {
       const res = await AuthApiService.postLogin(loginUser);
       user_name.value = '';

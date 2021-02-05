@@ -3,8 +3,9 @@ import UsersApiService from '../../services/users-api-service';
 
 class SignupPage extends React.Component {
   state = {
-    error: null
+    error: null,
   }
+
   handleSubmit = async (e) => {
     e.preventDefault();
     this.setState({ error: null });
@@ -14,6 +15,7 @@ class SignupPage extends React.Component {
       user_name: user_name.value,
       password: password.value
     };
+
     try {
       await UsersApiService.postUser(newUser);
       full_name.value = '';

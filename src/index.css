@@ -53,19 +53,12 @@ h3 {
   font-size: 25px;
 }
 
-hr {
-  width: 90%;
-  border: 1px solid #ddd;
-  display: none;
-}
-
 .votes {
   font-size: 25px;
   font-weight: bold;
 }
 
 section {
-  /* min-height: 200px; */
   border-radius: 10px;
   margin: 10px 0;
   padding: 2% 0;
@@ -81,10 +74,6 @@ a {
 a:hover, a:active {
   color: #aaa;
 }
-
-/* section:nth-child(even) {
-  background-color: rgba(221, 221, 221, 0.7);
-} */
 
 ul {
   list-style-type: none;

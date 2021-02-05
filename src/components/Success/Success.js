@@ -3,16 +3,14 @@ import { Link, Redirect } from 'react-router-dom';
 
 class Success extends React.Component {
   state = {
-    copied: false
+    copied: false,
   }
 
   handleShare = async () => {
-    // this.setState({copied: false });
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/poll/${this.props.location.state.pollId}`);
       this.setState({ copied: true });
-    }
-    catch (res) {
+    } catch (res) {
       console.log(res);
     }
   }
@@ -32,7 +30,7 @@ class Success extends React.Component {
 }
 
 Success.defaultProps = {
-  location: {}
+  location: {},
 }
 
 export default Success;

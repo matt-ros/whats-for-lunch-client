@@ -31,12 +31,14 @@ const HereApiService = {
           ? res.json().then(e => Promise.reject(e))
           : res.json()
       );
-  }
+  },
 }
 
 function formatQueryParams(params) {
-  const queryItems = Object.keys(params)
-      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
+  const queryItems = Object.keys(params).map(key => {
+    return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
+  });
+
   return queryItems.join('&');
 }
 

@@ -7,7 +7,7 @@ class UserHomepage extends React.Component {
   state = {
     user: {},
     polls: [],
-    error: null
+    error: null,
   }
 
   async componentDidMount() {
@@ -18,8 +18,7 @@ class UserHomepage extends React.Component {
         user,
         polls,
       });
-    }
-    catch (res) {
+    } catch (res) {
       this.setState({ error: res.error });
     }
   }
@@ -33,7 +32,8 @@ class UserHomepage extends React.Component {
           <Link to={{ pathname: `/edit/${poll.id}`, state: { poll } }}>{pollName}</Link>
         </li>
       );
-    })
+    });
+    
     return (
       <>
         {error && <p className="error">{error}</p>}

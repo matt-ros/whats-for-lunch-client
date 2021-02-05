@@ -14,13 +14,13 @@ const ItemsApiService = {
   postItems(pollId, items) {
     const headers = { 'content-type': 'application/json' };
     if (TokenService.hasUnexpiredAuthToken()) {
-      headers.Authorization = `Bearer ${TokenService.getAuthToken()}`
+      headers.Authorization = `Bearer ${TokenService.getAuthToken()}`;
     }
 
     return fetch(`${config.API_BASE_URL}/items/poll/${pollId}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify(items)
+      body: JSON.stringify(items),
     })
       .then(res =>
         (!res.ok)
@@ -34,9 +34,9 @@ const ItemsApiService = {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${TokenService.getAuthToken()}`,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
-      body: JSON.stringify(updateFields)
+      body: JSON.stringify(updateFields),
     })
       .then(res =>
         (!res.ok)
@@ -49,7 +49,7 @@ const ItemsApiService = {
     return fetch(`${config.API_BASE_URL}/items/${itemId}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${TokenService.getAuthToken()}`
+        'Authorization': `Bearer ${TokenService.getAuthToken()}`,
       },
     })
       .then(res =>
@@ -61,7 +61,7 @@ const ItemsApiService = {
 
   incrementVote(itemId) {
     return fetch(`${config.API_BASE_URL}/items/vote/${itemId}`, {
-      method: 'PATCH'
+      method: 'PATCH',
     })
       .then(res =>
         (!res.ok)
@@ -74,7 +74,7 @@ const ItemsApiService = {
     return fetch(`${config.API_BASE_URL}/items/resetVotes/${pollId}`, {
       method: 'PATCH',
       headers: {
-        'Authorization': `Bearer ${TokenService.getAuthToken()}`
+        'Authorization': `Bearer ${TokenService.getAuthToken()}`,
       },
     })
       .then(res =>
@@ -82,7 +82,7 @@ const ItemsApiService = {
           ? res.json().then(e => Promise.reject(e))
           : res.ok
       );
-  }
+  },
 }
 
 export default ItemsApiService;

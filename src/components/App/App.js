@@ -1,19 +1,19 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import ErrorBoundary from '../Utils/ErrorBoundary';
 import PrivateRoute from '../Utils/PrivateRoute';
 import PublicOnlyRoute from '../Utils/PublicOnlyRoute';
 import CreatePoll from '../CreatePoll/CreatePoll';
 import EditPoll from '../EditPoll/EditPoll';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
+import Nav from '../Nav/Nav';
 import PollPage from '../PollPage/PollPage';
 import PollResultsPage from '../PollResultsPage/PollResultsPage';
 import SignupPage from '../SignupPage/SignupPage';
-import UserHomepage from '../UserHomepage/UserHomepage';
-import Nav from '../Nav/Nav';
-import WinnerPage from '../WinnerPage/WinnerPage';
-import ErrorBoundary from '../Utils/ErrorBoundary';
 import Success from '../Success/Success';
+import UserHomepage from '../UserHomepage/UserHomepage';
+import WinnerPage from '../WinnerPage/WinnerPage';
 
 class App extends React.Component {
   render() {

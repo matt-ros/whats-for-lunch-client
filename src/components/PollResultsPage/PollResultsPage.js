@@ -6,7 +6,7 @@ import TokenService from '../../services/token-service';
 class PollResultsPage extends React.Component {
   state = {
     poll: {},
-    items: []
+    items: [],
   }
 
   async componentDidMount() {
@@ -25,8 +25,8 @@ class PollResultsPage extends React.Component {
   render() {
     const { error } = this.state;
     const { end_time } = this.state.poll;
-    const totalVotes = this.state.items.reduce(((acc, item) => acc + item.item_votes), 0);
-    console.log(totalVotes)
+    const alreadyVoted = TokenService.hasVotedInPoll(this.props.match.params.id, end_time);
+    const timeExpired = new Date(end_time).getTime() < Date.now();
     const sortedItems = this.state.items.sort((a, b) => b.item_votes - a.item_votes);
     const pollItems = sortedItems.map((item, idx) => {
       return (
@@ -43,14 +43,13 @@ class PollResultsPage extends React.Component {
             {item.item_votes} {item.item_votes === 1 ? 'Vote' : 'Votes'}
           </span>
           <br />
-          {/* <br /> */}
         </li>
       );
     });
 
     return (
       <section>
-        <h2>{(new Date(end_time) > Date.now()) ? 'Current Results' : 'Final Results'}</h2>
+        <h2>{timeExpired ? 'Final Results' : 'Current Results'}</h2>
         {error && <p className="error">{error}</p>}
         <ul className="poll">
           {pollItems}
@@ -58,18 +57,12 @@ class PollResultsPage extends React.Component {
         <button
           type="button"
           onClick={e => this.props.history.push(`/poll/${this.props.match.params.id}`)}
-          disabled={TokenService.hasVotedInPoll(this.props.match.params.id, end_time) ||
-            !(new Date(end_time).getTime() > Date.now())
-          }
+          disabled={alreadyVoted || timeExpired}
         >
           Vote in this Poll
         </button>
-        {TokenService.hasVotedInPoll(this.props.match.params.id, end_time)
-          ? 'You have already voted in this poll'
-          : (new Date(end_time).getTime() > Date.now())
-            ? null
-            : 'This poll has ended'
-        }
+        {alreadyVoted && <p>You have already voted in this poll</p>}
+        {(!alreadyVoted && timeExpired) && <p>This poll has ended</p>}
       </section>
     );
   }

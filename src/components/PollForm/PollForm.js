@@ -1,13 +1,13 @@
 import React from 'react';
 import HereApiService from '../../services/here-api-service';
-import PollsApiService from '../../services/polls-api-service';
 import ItemsApiService from '../../services/items-api-service';
-import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
-import PollNameForm from '../PollNameForm/PollNameForm';
-import LocationForm from '../LocationForm/LocationForm';
+import PollsApiService from '../../services/polls-api-service';
 import AddItemForm from '../AddItemForm/AddItemForm';
 import DurationForm from '../DurationForm/DurationForm';
+import LocationForm from '../LocationForm/LocationForm';
+import PollNameForm from '../PollNameForm/PollNameForm';
 import Preview from '../Preview/Preview';
+import RestaurantListPage from '../RestaurantListPage/RestaurantListPage';
 
 class PollForm extends React.Component {
   state = {
@@ -28,8 +28,7 @@ class PollForm extends React.Component {
       try {
         const items = await ItemsApiService.getItems(this.props.poll.id);
         this.setState({ items });
-      }
-      catch (res) {
+      } catch (res) {
         this.setState({ error: res.error });
       }
     }
@@ -46,8 +45,7 @@ class PollForm extends React.Component {
         long: data.items[0].position.lng
       }, this.restaurantSearch);
       this.nextStep();
-    }
-    catch (res) {
+    } catch (res) {
       this.setState({ locError: res.error });
     }
   }
@@ -55,7 +53,6 @@ class PollForm extends React.Component {
   handleCurrentLocation = e => {
     this.setState({ locError: null });
     navigator.geolocation.getCurrentPosition((pos) => {
-      console.log(`current location ${pos.coords.latitude}, ${pos.coords.longitude}`)
       this.setState({
         lat: pos.coords.latitude,
         long: pos.coords.longitude
@@ -66,11 +63,13 @@ class PollForm extends React.Component {
 
   restaurantSearch = async () => {
     try {
-      const response = await HereApiService.restaurantSearch(this.state.lat, this.state.long, this.state.radius);
-      console.log(response);
-      this.setState({
-        restaurants: response.items
-      });
+      const response = await HereApiService.restaurantSearch(
+        this.state.lat,
+        this.state.long,
+        this.state.radius
+      );
+
+      this.setState({ restaurants: response.items });
     } catch (res) {
       return this.setState({ error: res.error });
     }
@@ -88,13 +87,15 @@ class PollForm extends React.Component {
         item_cuisine,
         item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
       };
+      
       items.push(item);
     });
+
     this.setState({
       items: [
         ...this.state.items,
-        ...items
-      ]
+        ...items,
+      ],
     });
   }
 
@@ -119,12 +120,14 @@ class PollForm extends React.Component {
       item_cuisine: item_cuisine.value,
       item_link: item_link.value,
     };
+
     this.setState({
       items: [
         ...this.state.items,
         newItem,
-      ]
+      ],
     });
+
     item_name.value = '';
     item_address.value = '';
     item_cuisine.value = '';
@@ -132,14 +135,13 @@ class PollForm extends React.Component {
   }
 
   handleClickDelete = async (idx) => {
-    const itemId = (this.state.items[idx].id) ? this.state.items[idx].id : null;
+    const itemId = this.state.items[idx].id;
     const newPollItems = this.state.items.filter((_, index) => index !== idx);
     this.setState({ items: newPollItems });
     if (itemId) {
       try {
         await ItemsApiService.deleteItem(itemId);
-      }
-      catch (res) {
+      } catch (res) {
         this.setState({ error: res.error });
       }
     }
@@ -149,11 +151,13 @@ class PollForm extends React.Component {
     if (this.state.items.length === 0) {
       return this.setState({ error: 'Please add some items to your poll' });
     }
+
     this.setState({ working: true });
     const newPoll = {
       poll_name: (this.state.pollName) ? this.state.pollName : '',
-      end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
-    }
+      end_time: this.state.endTime || new Date(Date.now() + (60 * 60 * 1000)),
+    };
+
     try {
       const poll = await PollsApiService.postPoll(newPoll);
       await ItemsApiService.postItems(poll.id, this.state.items);
@@ -163,8 +167,7 @@ class PollForm extends React.Component {
           pollId: poll.id
         }
       });
-    }
-    catch (res) {
+    } catch (res) {
       this.setState({ error: res.error });
     }
   }
@@ -173,11 +176,13 @@ class PollForm extends React.Component {
     if (this.state.items.length === 0) {
       return this.setState({ error: 'Please add some items to your poll' });
     }
+
     this.setState({ working: true });
     const updateFields = {
       poll_name: (this.state.pollName) ? this.state.pollName : this.props.poll.poll_name,
-      end_time: (this.state.endTime) ? this.state.endTime : new Date(Date.now() + (60 * 60 * 1000)),
-    }
+      end_time: this.state.endTime || new Date(Date.now() + (60 * 60 * 1000)),
+    };
+
     const newItems = this.state.items.filter(item => !item.id);
     try {
       await PollsApiService.patchPoll(this.props.poll.id, updateFields);
@@ -185,16 +190,17 @@ class PollForm extends React.Component {
       if (newItems.length > 0) {
         await ItemsApiService.postItems(this.props.poll.id, newItems);
       }
+
       this.props.history.push({
         pathname: '/success',
         state: {
-          pollId: this.props.poll.id
-        }
+          pollId: this.props.poll.id,
+        },
       });
-    }
-    catch (res) {
+    } catch (res) {
       this.setState({ error: res.error });
     }
+    
   }
 
   handleUpdateTime = e => {
@@ -207,22 +213,24 @@ class PollForm extends React.Component {
   nextStep = () => {
     this.setState({
       error: null, 
-      locError: null
+      locError: null,
     });
+
     const { step } = this.state;
     this.setState({
-      step: step + 1
+      step: step + 1,
     });
   }
 
   prevStep = () => {
     this.setState({
       error: null,
-      locError: null
+      locError: null,
     });
+
     const { step } = this.state;
     this.setState({
-      step: step - 1
+      step: step - 1,
     });
   }
 

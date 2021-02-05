@@ -5,7 +5,7 @@ class RestaurantListPage extends React.Component {
     numChoices: 5,
     filter: '',
     radius: null,
-    choices: []
+    choices: [],
   }
 
   handleGetMore = () => {
@@ -13,7 +13,7 @@ class RestaurantListPage extends React.Component {
   }
 
   handleChangeFilter = e => {
-    this.setState({ filter: e.target.value })
+    this.setState({ filter: e.target.value });
   }
 
   handleChangeRadius = e => {
@@ -31,13 +31,12 @@ class RestaurantListPage extends React.Component {
       this.setState({
         choices: [
           ...this.state.choices,
-          choiceIndex
-        ]
+          choiceIndex,
+        ],
       });
-    }
-    else {
+    } else {
       this.setState({ choices: newChoices });
-    }
+    } 
   }
 
   handleDeselectAll = () => {
@@ -47,6 +46,7 @@ class RestaurantListPage extends React.Component {
         element.checked = false;
       }
     }
+
     this.setState({ choices: [] });
   }
 
@@ -59,6 +59,7 @@ class RestaurantListPage extends React.Component {
         newChoices.push(i);
       }
     }
+    
     this.setState({ choices: newChoices });
   }
 
@@ -79,15 +80,25 @@ class RestaurantListPage extends React.Component {
         item_name: rest.title,
         item_address: `${rest.address.houseNumber} ${rest.address.street}, ${rest.address.city}, ${rest.address.stateCode}`,
         item_cuisine,
-        item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`
-      }
+        item_link: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rest.address.label)}`,
+      };
     });
-    const filteredChoices = restaurants.filter(rest => rest.item_cuisine.toLowerCase().includes(this.state.filter.toLowerCase()));
+
+    const filteredChoices = restaurants.filter(rest => (
+      rest.item_cuisine.toLowerCase().includes(this.state.filter.toLowerCase()))
+    );
+
     const restChoices = filteredChoices.slice(0, this.state.numChoices);
     const choices = restChoices.map((choice, idx) => {
       return (
         <div key={idx}>
-          <input type="checkbox" name={`choice_${idx}`} id={`choice_${idx}`} value={choice.origIndex} onChange={this.handleCheckbox} />
+          <input
+            type="checkbox"
+            name={`choice_${idx}`}
+            id={`choice_${idx}`}
+            value={choice.origIndex}
+            onChange={this.handleCheckbox}
+          />
           <label htmlFor={`choice_${idx}`}>
             {choice.item_name}
             <br />
@@ -108,19 +119,24 @@ class RestaurantListPage extends React.Component {
           {error && <p className="error">{error}</p>}
           {locError && <p className="error">{locError}</p>}
           <label htmlFor="cuisine">Cuisine Filter: </label>
-          <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} /> <br />
+          <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} />
+          <br />
           <label htmlFor="radius">Search Radius (miles): </label>
-          <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />{' '}
-          <button type="button" onClick={this.handleClickChange}>Update Radius</button> <br />
+          <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />
+          {' '}
+          <button type="button" onClick={this.handleClickChange}>Update Radius</button>
+          <br />
           <p>Current radius: {radius} mi</p>
-
           <p>Showing {choices.length} out of {filteredChoices.length} matching restaurants</p>
           <form className="restaurants" id="restaurants" onSubmit={this.handleSubmit}>
             {choices}
           </form>
-          <button type="button" onClick={this.handleSelectAll}>Select All</button> {' '}
-          <button type="button" onClick={this.handleDeselectAll}>Deselect All</button> {' '}
-          <button type="button" onClick={this.handleGetMore}>Get more restaurants</button> {' '}
+          <button type="button" onClick={this.handleSelectAll}>Select All</button>
+          {' '}
+          <button type="button" onClick={this.handleDeselectAll}>Deselect All</button>
+          {' '}
+          <button type="button" onClick={this.handleGetMore}>Get more restaurants</button>
+          {' '}
           <button type="submit" form="restaurants">Add restaurants to poll</button>
           <br />
           <button type="button" onClick={this.props.prevStep}>Back</button>
@@ -133,8 +149,8 @@ class RestaurantListPage extends React.Component {
 
 RestaurantListPage.defaultProps = {
   values: {
-    restaurants: []
-  }
+    restaurants: [],
+  },
 }
 
 export default RestaurantListPage;

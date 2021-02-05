@@ -3,7 +3,7 @@ import React from 'react';
 class Preview extends React.Component {
   render() {
     const { error, working } = this.props;
-    const endTime = (this.props.values.endTime) ? this.props.values.endTime : new Date(Date.now() + (60 * 60 * 1000));
+    const endTime = this.props.values.endTime || new Date(Date.now() + (60 * 60 * 1000));
     const pollItems = this.props.values.items.map((item, idx) => {
       return (
         <li key={idx} className="poll-choice">
@@ -20,6 +20,7 @@ class Preview extends React.Component {
         </li>
       );
     });
+
     return (
       <section>
         <h2>Poll Preview</h2>
@@ -33,11 +34,12 @@ class Preview extends React.Component {
               month: 'long',
               day: 'numeric',
               hour: 'numeric',
-              minute: 'numeric'
-            }
+              minute: 'numeric',
+            },
           )}</p>
         {working && <p>{working}</p>}
-        <button type="button" onClick={this.props.prevStep}>Back</button> {' '}
+        <button type="button" onClick={this.props.prevStep}>Back</button>
+        {' '}
         {(this.props.poll)
           ? <button type="button" onClick={this.props.handleClickUpdate}>Update Poll</button>
           : <button type="button" onClick={this.props.handleClickPublish}>Publish Poll</button>
@@ -49,7 +51,7 @@ class Preview extends React.Component {
 
 Preview.defaultProps = {
   values: {
-    items: []
+    items: [],
   }
 }
 

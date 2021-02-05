@@ -3,6 +3,7 @@ import React from 'react';
 class PollNameForm extends React.Component {
   render() {
     const { error } = this.props;
+
     return (
       <section>
         {error && <p className="error">{error}</p>}
@@ -22,7 +23,7 @@ class PollNameForm extends React.Component {
 }
 
 PollNameForm.defaultProps = {
-  values: {}
+  values: {},
 }
 
 export default PollNameForm;

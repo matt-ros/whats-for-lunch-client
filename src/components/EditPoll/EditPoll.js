@@ -4,8 +4,10 @@ import PollForm from '../PollForm/PollForm';
 
 class EditPoll extends React.Component {
   state = {
-    error: null
+    poll: {},
+    error: null,
   }
+
   async componentDidMount() {
     try {
       const poll = await PollsApiService.getPoll(this.props.match.params.id);
@@ -14,9 +16,10 @@ class EditPoll extends React.Component {
       this.setState({ error: res.error });
     }
   }
+
   render() {
     const { error } = this.state;
-    // const poll = (this.state.poll) ? this.state.poll : null
+    
     return (
       <>
         {error && <p className="error">{error}</p>}

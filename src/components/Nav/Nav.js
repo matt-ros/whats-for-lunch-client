@@ -7,6 +7,7 @@ class Nav extends React.Component {
     TokenService.clearAuthToken();
     this.props.history.push('/');
   }
+  
   renderLoggedIn() {
     return (
       <>

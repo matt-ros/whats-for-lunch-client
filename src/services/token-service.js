@@ -39,11 +39,10 @@ const TokenService = {
     const votedToken = window.localStorage.getItem(`voted-${pollId}`);
     if (votedToken === timeString) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
-  }
+  },
 };
 
 export default TokenService;
