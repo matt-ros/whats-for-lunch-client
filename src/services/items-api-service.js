@@ -29,22 +29,6 @@ const ItemsApiService = {
       );
   },
 
-  patchItem(itemId, updateFields) {
-    return fetch(`${config.API_BASE_URL}/items/${itemId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${TokenService.getAuthToken()}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(updateFields),
-    })
-      .then(res =>
-        (!res.ok)
-          ? res.json().then(e => Promise.reject(e))
-          : res.ok
-      );
-  },
-
   deleteItem(itemId) {
     return fetch(`${config.API_BASE_URL}/items/${itemId}`, {
       method: 'DELETE',
