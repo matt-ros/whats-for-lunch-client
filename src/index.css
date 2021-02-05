@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  margin-top: calc(10% + 60px);
+  margin-top: calc(6% + 60px);
   font-family: 'Cabin', sans-serif; 
   font-size: 20px;
   color: #eee;
@@ -40,7 +40,7 @@ h1 {
   font-family: 'Ribeye', cursive;
   font-size: 40px;
   color: #ddd;
-  margin-top: -5%;
+  margin-top: -2%;
 }
 
 h2 {
@@ -223,6 +223,18 @@ button.logout:hover, button.logout:active {
 }
 
 @media all and (min-width: 800px) {
+  h1 {
+    font-size: 50px;
+  }
+
+  h2 {
+    font-size: 40px;
+  }
+
+  h3 {
+    font-size: 33px;
+  }
+
   .duration {
     padding: 0.5% 1%;
   }
