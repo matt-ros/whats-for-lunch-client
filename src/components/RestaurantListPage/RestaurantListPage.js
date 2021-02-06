@@ -20,7 +20,8 @@ class RestaurantListPage extends React.Component {
     this.setState({ radius: e.target.value });
   }
 
-  handleClickChange = () => {
+  handleClickChange = e => {
+    e.preventDefault();
     this.props.updateRadius(this.state.radius);
   }
 
@@ -121,10 +122,11 @@ class RestaurantListPage extends React.Component {
           <label htmlFor="cuisine">Cuisine Filter: </label>
           <input type="text" name="cuisine" id="cuisine" onChange={this.handleChangeFilter} />
           <br />
-          <label htmlFor="radius">Search Radius (miles): </label>
-          <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />
-          {' '}
-          <button type="button" onClick={this.handleClickChange}>Update Radius</button>
+          <form id="radius" onSubmit={this.handleClickChange}>
+            <label htmlFor="radius">Search Radius (miles): </label>
+            <input type="number" min="0.1" step="0.1" defaultValue="1" onChange={this.handleChangeRadius} />
+          </form>
+          <button type="submit" form="radius">Update Radius</button>
           <br />
           <p>Current radius: {radius} mi</p>
           <p>Showing {choices.length} out of {filteredChoices.length} matching restaurants</p>
