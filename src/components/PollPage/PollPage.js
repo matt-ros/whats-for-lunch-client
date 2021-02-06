@@ -60,7 +60,7 @@ class PollPage extends React.Component {
             <br />
             {item.item_cuisine}
             <br />
-            <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>
+            {item.item_link && <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>}
           </label>
           <br />
         </div>
