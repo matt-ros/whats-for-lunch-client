@@ -83,7 +83,8 @@ class PollPage extends React.Component {
           <form className="poll" id="poll" onSubmit={this.handleSubmit}>
             {choices}
           </form>
-          <button type="submit" form="poll">Vote!</button> {' '}
+          <button type="submit" form="poll">Vote!</button>
+          {' '}
           <button
             type="button"
             onClick={e => this.props.history.push(`/results/${this.props.match.params.id}`)}
