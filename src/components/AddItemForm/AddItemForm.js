@@ -34,6 +34,6 @@ class AddItemForm extends React.Component {
 
 AddItemForm.defaultProps = {
   values: {},
-}
+};
 
 export default AddItemForm;

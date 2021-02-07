@@ -4,19 +4,21 @@ import TokenService from '../../services/token-service';
 
 export default function PrivateRoute({ component, ...props }) {
   const Component = component;
-  
+
   return (
     <Route
       {...props}
-      render={componentProps => (
+      render={(componentProps) => (
         TokenService.hasUnexpiredAuthToken()
           ? <Component {...componentProps} />
-          : <Redirect
+          : (
+            <Redirect
               to={{
                 pathname: '/',
-                state: { from: componentProps.location }
+                state: { from: componentProps.location },
               }}
             />
+          )
       )}
     />
   );

@@ -9,7 +9,7 @@ it('renders without crashing', () => {
     <BrowserRouter>
       <LandingPage location={{}} />
     </BrowserRouter>,
-    div
+    div,
   );
   ReactDOM.unmountComponentAtNode(div);
 });

@@ -8,7 +8,7 @@ class LandingPage extends React.Component {
         <header role="banner">
           <h1>What's For Lunch?</h1>
         </header>
-        
+
         <section>
           Create a poll with a list of local restaurants
           <br />
@@ -20,7 +20,7 @@ class LandingPage extends React.Component {
           <br />
           <br />
           Never have trouble deciding where to eat again!
-          
+
           <h2><Link to="/create" className="landing">Get Started!</Link></h2>
         </section>
       </>

@@ -9,11 +9,9 @@ const HereApiService = {
     };
 
     return fetch(`${config.GEOCODE_BASE_URL}?${formatQueryParams(params)}`)
-      .then(res =>
-        (!res.ok)
-          ? res.json().then(e => Promise.reject(e))
-          : res.json()
-      );
+      .then((res) => ((!res.ok)
+        ? res.json().then((e) => Promise.reject(e))
+        : res.json()));
   },
 
   restaurantSearch(lat, long, radius) {
@@ -26,18 +24,14 @@ const HereApiService = {
     };
 
     return fetch(`${config.SEARCH_BASE_URL}?${formatQueryParams(params)}`)
-      .then(res =>
-        (!res.ok)
-          ? res.json().then(e => Promise.reject(e))
-          : res.json()
-      );
+      .then((res) => ((!res.ok)
+        ? res.json().then((e) => Promise.reject(e))
+        : res.json()));
   },
-}
+};
 
 function formatQueryParams(params) {
-  const queryItems = Object.keys(params).map(key => {
-    return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-  });
+  const queryItems = Object.keys(params).map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
 
   return queryItems.join('&');
 }

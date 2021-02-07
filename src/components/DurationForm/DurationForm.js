@@ -19,15 +19,18 @@ class DurationForm extends React.Component {
             <br />
             <button type="submit">Update</button>
           </fieldset>
-          <p>Expires {endTime.toLocaleString(
-            [],
-            {
-              month: 'long',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-            }
-          )}</p>
+          <p>
+            Expires
+            {endTime.toLocaleString(
+              [],
+              {
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+              },
+            )}
+          </p>
         </form>
         <button type="button" onClick={this.props.prevStep}>Back</button>
         <button type="button" onClick={this.props.nextStep}>Next</button>
@@ -38,6 +41,6 @@ class DurationForm extends React.Component {
 
 DurationForm.defaultProps = {
   values: {},
-}
+};
 
 export default DurationForm;

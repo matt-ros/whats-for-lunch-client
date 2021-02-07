@@ -27,6 +27,6 @@ class LocationForm extends React.Component {
 
 LocationForm.defaultProps = {
   values: {},
-}
+};
 
 export default LocationForm;

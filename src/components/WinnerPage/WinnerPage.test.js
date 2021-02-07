@@ -9,7 +9,7 @@ it('renders without crashing', () => {
     <BrowserRouter>
       <WinnerPage match={{ params: { id: 1 } }} />
     </BrowserRouter>,
-    div
+    div,
   );
   ReactDOM.unmountComponentAtNode(div);
 });

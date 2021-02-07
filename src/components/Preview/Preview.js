@@ -4,22 +4,20 @@ class Preview extends React.Component {
   render() {
     const { error, working } = this.props;
     const endTime = this.props.values.endTime || new Date(Date.now() + (60 * 60 * 1000));
-    const pollItems = this.props.values.items.map((item, idx) => {
-      return (
-        <li key={idx} className="poll-choice">
-          {item.item_name}
-          <br />
-          {item.item_address}
-          <br />
-          {item.item_cuisine}
-          <br />
-          {item.item_link && <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>}
-          <br />
-          <button type="button" onClick={e => this.props.handleClickDelete(idx)}>Delete</button>
-          <br />
-        </li>
-      );
-    });
+    const pollItems = this.props.values.items.map((item, idx) => (
+      <li key={idx} className="poll-choice">
+        {item.item_name}
+        <br />
+        {item.item_address}
+        <br />
+        {item.item_cuisine}
+        <br />
+        {item.item_link && <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>}
+        <br />
+        <button type="button" onClick={(e) => this.props.handleClickDelete(idx)}>Delete</button>
+        <br />
+      </li>
+    ));
 
     return (
       <section>
@@ -28,7 +26,9 @@ class Preview extends React.Component {
         <ul className="poll">
           {pollItems}
         </ul>
-        <p>Expires {endTime.toLocaleString(
+        <p>
+          Expires
+          {endTime.toLocaleString(
             [],
             {
               month: 'long',
@@ -36,14 +36,14 @@ class Preview extends React.Component {
               hour: 'numeric',
               minute: 'numeric',
             },
-          )}</p>
+          )}
+        </p>
         {working && <p>{working}</p>}
         <button type="button" onClick={this.props.prevStep}>Back</button>
         {' '}
         {(this.props.poll)
           ? <button type="button" onClick={this.props.handleClickUpdate}>Update Poll</button>
-          : <button type="button" onClick={this.props.handleClickPublish}>Publish Poll</button>
-        }
+          : <button type="button" onClick={this.props.handleClickPublish}>Publish Poll</button>}
       </section>
     );
   }
@@ -52,7 +52,7 @@ class Preview extends React.Component {
 Preview.defaultProps = {
   values: {
     items: [],
-  }
-}
+  },
+};
 
 export default Preview;

@@ -6,7 +6,7 @@ it('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(
     <RestaurantListPage />,
-    div
+    div,
   );
   ReactDOM.unmountComponentAtNode(div);
 });

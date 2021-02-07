@@ -8,7 +8,7 @@ export default function PublicOnlyRoute({ component, ...props }) {
   return (
     <Route
       {...props}
-      render={componentProps => (
+      render={(componentProps) => (
         TokenService.hasUnexpiredAuthToken()
           ? <Redirect to="/homepage" />
           : <Component {...componentProps} />
