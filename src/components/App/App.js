@@ -18,24 +18,27 @@ import WinnerPage from '../WinnerPage/WinnerPage';
 class App extends React.Component {
   render() {
     return (
-      <main className="App">
-        <Route component={Nav} />
-
+      <>
         <ErrorBoundary>
-          <Switch>
-            <PublicOnlyRoute exact path="/" component={LandingPage} />
-            <Route path="/create" component={CreatePoll} />
-            <Route path="/success" component={Success} />
-            <Route path="/poll/:id" component={PollPage} />
-            <Route path="/results/:id" component={PollResultsPage} />
-            <Route path="/winner/:id" component={WinnerPage} />
-            <PublicOnlyRoute path="/login" component={LoginPage} />
-            <PublicOnlyRoute path="/signup" component={SignupPage} />
-            <PrivateRoute path="/homepage" component={UserHomepage} />
-            <PrivateRoute path="/edit/:id" component={EditPoll} />
-          </Switch>
+          <Route component={Nav} />
         </ErrorBoundary>
-      </main>
+        <main className="App">
+          <ErrorBoundary>
+            <Switch>
+              <PublicOnlyRoute exact path="/" component={LandingPage} />
+              <Route path="/create" component={CreatePoll} />
+              <Route path="/success" component={Success} />
+              <Route path="/poll/:id" component={PollPage} />
+              <Route path="/results/:id" component={PollResultsPage} />
+              <Route path="/winner/:id" component={WinnerPage} />
+              <PublicOnlyRoute path="/login" component={LoginPage} />
+              <PublicOnlyRoute path="/signup" component={SignupPage} />
+              <PrivateRoute path="/homepage" component={UserHomepage} />
+              <PrivateRoute path="/edit/:id" component={EditPoll} />
+            </Switch>
+          </ErrorBoundary>
+        </main>
+      </>
     );
   }
 }

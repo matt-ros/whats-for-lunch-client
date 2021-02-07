@@ -27,7 +27,7 @@ class Preview extends React.Component {
           {pollItems}
         </ul>
         <p>
-          Expires
+          Expires{' '}
           {endTime.toLocaleString(
             [],
             {

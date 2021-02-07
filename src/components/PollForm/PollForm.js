@@ -234,6 +234,42 @@ class PollForm extends React.Component {
     });
   }
 
+  restListStep = () => {
+    this.setState({
+      error: null,
+      locError: null,
+    });
+
+    const { step } = this.state;
+    this.setState({
+      step: 3,
+    });
+  }
+
+  durationStep = () => {
+    this.setState({
+      error: null,
+      locError: null,
+    });
+
+    const { step } = this.state;
+    this.setState({
+      step: 4,
+    });
+  }
+
+  addItemStep = () => {
+    this.setState({
+      error: null,
+      locError: null,
+    });
+
+    const { step } = this.state;
+    this.setState({
+      step: 42,
+    });
+  }
+
   render() {
     const { error, locError } = this.state;
     const { step } = this.state;
@@ -273,6 +309,7 @@ class PollForm extends React.Component {
           <RestaurantListPage
             nextStep={this.nextStep}
             prevStep={this.prevStep}
+            addItemStep={this.addItemStep}
             updateRadius={this.updateRadius}
             createPollItems={this.createPollItems}
             locError={locError}
@@ -283,16 +320,6 @@ class PollForm extends React.Component {
     
       case 4:
         return (
-          <AddItemForm
-            nextStep={this.nextStep}
-            prevStep={this.prevStep}
-            handleSubmitItem={this.handleSubmitItem}
-            error={error}
-          />
-        );
-    
-      case 5:
-        return (
           <DurationForm
             nextStep={this.nextStep}
             prevStep={this.prevStep}
@@ -302,7 +329,7 @@ class PollForm extends React.Component {
           />
         );
     
-      case 6:
+      case 5:
         return (
           <Preview
             prevStep={this.prevStep}
@@ -313,6 +340,16 @@ class PollForm extends React.Component {
             working={working}
             error={error}
             values={values}
+          />
+        );
+            
+      case 42:
+        return (
+          <AddItemForm
+            restListStep={this.restListStep}
+            durationStep={this.durationStep}
+            handleSubmitItem={this.handleSubmitItem}
+            error={error}
           />
         );
     

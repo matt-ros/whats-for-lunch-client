@@ -20,7 +20,7 @@ class DurationForm extends React.Component {
             <button type="submit">Update</button>
           </fieldset>
           <p>
-            Expires
+            Expires{' '}
             {endTime.toLocaleString(
               [],
               {

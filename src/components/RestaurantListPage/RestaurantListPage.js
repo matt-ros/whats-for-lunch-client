@@ -137,9 +137,11 @@ class RestaurantListPage extends React.Component {
           {' '}
           <button type="button" onClick={this.handleDeselectAll}>Deselect All</button>
           {' '}
-          <button type="button" onClick={this.handleGetMore}>Get more restaurants</button>
+          <button type="button" onClick={this.handleGetMore}>Get More Restaurants</button>
+          <br />
+          <button type="submit" form="restaurants">Add Selection to Poll</button>
           {' '}
-          <button type="submit" form="restaurants">Add restaurants to poll</button>
+          <button type="button" onClick={this.props.addItemStep}>Add Custom Restaurant</button>
           <br />
           <button type="button" onClick={this.props.prevStep}>Back</button>
           <button type="button" onClick={this.props.nextStep}>Next</button>

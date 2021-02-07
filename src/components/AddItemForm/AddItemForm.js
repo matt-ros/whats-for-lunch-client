@@ -24,8 +24,8 @@ class AddItemForm extends React.Component {
           </fieldset>
           <button type="submit">Add</button>
         </form>
-        <button type="button" onClick={this.props.prevStep}>Back</button>
-        <button type="button" onClick={this.props.nextStep}>Next</button>
+        <button type="button" onClick={this.props.restListStep}>Back to Restaurant Search</button>
+        <button type="button" onClick={this.props.durationStep}>Continue</button>
       </section>
 
     );
