@@ -64,14 +64,14 @@ class UserHomepage extends React.Component {
         </section>
 
         <section>
+          <Link className="homepage-create" to="/create">Create New Poll</Link>
+        </section>
+
+        <section>
           <h3>Saved Polls</h3>
           <ul>
             {savedPolls}
           </ul>
-        </section>
-
-        <section>
-          <Link to="/create">Create New Poll</Link>
         </section>
       </>
     );
