@@ -13,7 +13,7 @@ const PollsApiService = {
         : res.json()));
   },
 
-  postPoll(poll) {
+  postPoll(poll, newItems) {
     const headers = { 'content-type': 'application/json' };
     if (TokenService.hasUnexpiredAuthToken()) {
       headers.Authorization = `Bearer ${TokenService.getAuthToken()}`;
@@ -22,7 +22,7 @@ const PollsApiService = {
     return fetch(`${config.API_BASE_URL}/polls`, {
       headers,
       method: 'POST',
-      body: JSON.stringify(poll),
+      body: JSON.stringify({ poll, newItems }),
     })
       .then((res) => ((!res.ok)
         ? res.json().then((e) => Promise.reject(e))

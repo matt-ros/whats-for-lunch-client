@@ -23,17 +23,6 @@ class PollForm extends React.Component {
     locError: null,
   }
 
-  async componentDidUpdate() {
-    if (this.props.poll && this.state.items.length === 0) {
-      try {
-        const items = await ItemsApiService.getItems(this.props.poll.id);
-        this.setState({ items });
-      } catch (res) {
-        this.setState({ error: res.error });
-      }
-    }
-  }
-
   handleSubmitLocation = async (e) => {
     e.preventDefault();
     this.setState({ locError: null });
@@ -134,17 +123,9 @@ class PollForm extends React.Component {
     item_link.value = '';
   }
 
-  handleClickDelete = async (idx) => {
-    const itemId = this.state.items[idx].id;
+  handleClickDelete = (idx) => {
     const newPollItems = this.state.items.filter((_, index) => index !== idx);
     this.setState({ items: newPollItems });
-    if (itemId) {
-      try {
-        await ItemsApiService.deleteItem(itemId);
-      } catch (res) {
-        this.setState({ error: res.error });
-      }
-    }
   }
 
   handleClickPublish = async () => {
@@ -154,13 +135,12 @@ class PollForm extends React.Component {
 
     this.setState({ working: true });
     const newPoll = {
-      poll_name: (this.state.pollName) ? this.state.pollName : '',
+      poll_name: this.state.pollName,
       end_time: this.state.endTime || new Date(Date.now() + (60 * 60 * 1000)),
     };
 
     try {
-      const poll = await PollsApiService.postPoll(newPoll);
-      await ItemsApiService.postItems(poll.id, this.state.items);
+      const { poll } = await PollsApiService.postPoll(newPoll, this.state.items);
       this.props.history.push({
         pathname: '/success',
         state: {
@@ -173,20 +153,22 @@ class PollForm extends React.Component {
   }
 
   handleClickUpdate = async () => {
-    if (this.state.items.length === 0) {
+    if (this.state.items.length === 0 && this.props.items.length === 0) {
       return this.setState({ error: 'Please add some items to your poll' });
     }
 
     this.setState({ working: true });
     const updateFields = {
-      poll_name: (this.state.pollName) ? this.state.pollName : this.props.poll.poll_name,
       end_time: this.state.endTime || new Date(Date.now() + (60 * 60 * 1000)),
     };
+
+    if (this.state.pollName) {
+      updateFields.poll_name = this.state.pollName;
+    }
 
     const newItems = this.state.items.filter(item => !item.id);
     try {
       await PollsApiService.patchPoll(this.props.poll.id, updateFields);
-      await ItemsApiService.resetVotes(this.props.poll.id);
       if (newItems.length > 0) {
         await ItemsApiService.postItems(this.props.poll.id, newItems);
       }
@@ -276,6 +258,7 @@ class PollForm extends React.Component {
     const { working } = this.state;
     const { pollName, endTime, radius, restaurants, items } = this.state;
     const { poll } = this.props;
+    const existingItems = this.props.items;
     const values = { pollName, endTime, radius, restaurants, items };
     if (!pollName && poll) {
       values.pollName = poll.poll_name;
@@ -334,9 +317,11 @@ class PollForm extends React.Component {
           <Preview
             prevStep={this.prevStep}
             handleClickDelete={this.handleClickDelete}
+            handleDeleteExistingItem={this.props.handleDeleteExistingItem}
             handleClickUpdate={this.handleClickUpdate}
             handleClickPublish={this.handleClickPublish}
             poll={poll}
+            existingItems={existingItems}
             working={working}
             error={error}
             values={values}

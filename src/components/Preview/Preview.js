@@ -2,10 +2,25 @@ import React from 'react';
 
 class Preview extends React.Component {
   render() {
-    const { error, working } = this.props;
+    const { error, working, existingItems } = this.props;
     const endTime = this.props.values.endTime || new Date(Date.now() + (60 * 60 * 1000));
-    const pollItems = this.props.values.items.map((item, idx) => (
-      <li key={idx} className="poll-choice">
+    const existingPollItems = this.props.existingItems.map((item, idx) => (
+      <li key={`existing${item.id}`} className="poll-choice">
+        {item.item_name}
+        <br />
+        {item.item_address}
+        <br />
+        {item.item_cuisine}
+        <br />
+        {item.item_link && <a href={item.item_link} target="_blank" rel="noreferrer">More Info</a>}
+        <br />
+        <button type="button" onClick={(e) => this.props.handleDeleteExistingItem(idx)}>Delete</button>
+        <br />
+      </li>
+    ));
+
+    const newPollItems = this.props.values.items.map((item, idx) => (
+      <li key={`new${idx}`} className="poll-choice">
         {item.item_name}
         <br />
         {item.item_address}
@@ -18,6 +33,8 @@ class Preview extends React.Component {
         <br />
       </li>
     ));
+
+    const pollItems = existingPollItems.concat(newPollItems);
 
     return (
       <section>
@@ -50,6 +67,7 @@ class Preview extends React.Component {
 }
 
 Preview.defaultProps = {
+  existingItems: [],
   values: {
     items: [],
   },

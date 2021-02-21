@@ -1,5 +1,4 @@
 import React from 'react';
-import ItemsApiService from '../../services/items-api-service';
 import PollsApiService from '../../services/polls-api-service';
 import TokenService from '../../services/token-service';
 
@@ -11,8 +10,7 @@ class PollResultsPage extends React.Component {
 
   async componentDidMount() {
     try {
-      const poll = await PollsApiService.getPoll(this.props.match.params.id);
-      const items = await ItemsApiService.getItems(this.props.match.params.id);
+      const { poll, items } = await PollsApiService.getPoll(this.props.match.params.id);
       this.setState({
         poll,
         items,

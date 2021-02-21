@@ -13,8 +13,7 @@ class PollPage extends React.Component {
 
   async componentDidMount() {
     try {
-      const poll = await PollsApiService.getPoll(this.props.match.params.id);
-      const items = await ItemsApiService.getItems(this.props.match.params.id);
+      const { poll, items } = await PollsApiService.getPoll(this.props.match.params.id);
       this.setState({
         poll,
         items,

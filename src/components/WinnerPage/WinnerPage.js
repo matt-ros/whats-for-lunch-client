@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import ItemsApiService from '../../services/items-api-service';
 import PollsApiService from '../../services/polls-api-service';
 
 class WinnerPage extends React.Component {
@@ -11,8 +10,7 @@ class WinnerPage extends React.Component {
 
   async componentDidMount() {
     try {
-      const poll = await PollsApiService.getPoll(this.props.match.params.id);
-      const items = await ItemsApiService.getItems(this.props.match.params.id);
+      const { poll, items } = await PollsApiService.getPoll(this.props.match.params.id);
       const sortedItems = items.sort((a, b) => b.item_votes - a.item_votes);
       this.setState({
         poll,
